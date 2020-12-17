@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="c7wo4n" name="AssignmentProject" projectType="guiapp" useAppConfig="0"
+<JUCERPROJECT id="qvzQWR" name="AssignmentProject" projectType="guiapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1">
-  <MAINGROUP id="bOnSJo" name="AssignmentProject">
-    <GROUP id="{71B61257-0795-B634-9DA5-656EFE64119C}" name="Source">
-      <FILE id="r2o5Xf" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="LFb25v" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="qo9lIZ" name="MainComponent.cpp" compile="1" resource="0"
+  <MAINGROUP id="R92xs7" name="AssignmentProject">
+    <GROUP id="{27C385CB-D8D7-3691-8328-2B24976DE379}" name="Source">
+      <FILE id="b1Dt8F" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="Y6zKji" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="Q5nLTX" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
     </GROUP>
   </MAINGROUP>
@@ -25,10 +25,12 @@
         <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -40,10 +42,12 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>
