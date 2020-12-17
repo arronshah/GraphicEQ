@@ -1,10 +1,12 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent()
+MainComponent::MainComponent(Audio& a) : audio(a)
 {
     setSize (1000, 600);
     addAndMakeVisible(audioFilePlayerComponent);
+    audioFilePlayerComponent.setFilePlayer(audio.getAudioFilePlayer());
+    
 }
 
 MainComponent::~MainComponent()

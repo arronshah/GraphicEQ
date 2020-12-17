@@ -8,6 +8,7 @@
 
 #include <JuceHeader.h>
 #include "MainComponent.h"
+#include "Audio.h"
 
 //==============================================================================
 class AssignmentProjectApplication  : public juce::JUCEApplication
@@ -25,7 +26,7 @@ public:
     {
         // This method is where you should put your application's initialisation code..
 
-        mainWindow.reset (new MainWindow (getApplicationName()));
+        mainWindow.reset (new MainWindow (getApplicationName(), audio));
     }
 
     void shutdown() override
@@ -58,14 +59,15 @@ public:
     class MainWindow    : public juce::DocumentWindow
     {
     public:
-        MainWindow (juce::String name)
+        MainWindow (juce::String name, Audio& audio)
             : DocumentWindow (name,
                               juce::Desktop::getInstance().getDefaultLookAndFeel()
                                                           .findColour (juce::ResizableWindow::backgroundColourId),
                               DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent(), true);
+            auto mainComponent = std::make_unique<MainComponent>(audio);
+            setContentOwned (mainComponent.release(), true);
 
            #if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);
@@ -98,6 +100,7 @@ public:
 
 private:
     std::unique_ptr<MainWindow> mainWindow;
+    Audio audio;
 };
 
 //==============================================================================

@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "AudioFilePlayerComponent.hpp"
+#include "Audio.h"
 
 //==============================================================================
 /*
@@ -12,7 +13,7 @@ class MainComponent  : public juce::Component
 {
 public:
     //==============================================================================
-    MainComponent();
+    MainComponent(Audio& a);
     ~MainComponent() override;
 
     //==============================================================================
@@ -23,6 +24,7 @@ private:
     //==============================================================================
     // Your private member variables go here...
     AudioFilePlayerComponent audioFilePlayerComponent;
+    Audio& audio;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
