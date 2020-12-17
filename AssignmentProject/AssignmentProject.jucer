@@ -4,10 +4,22 @@
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="R92xs7" name="AssignmentProject">
     <GROUP id="{27C385CB-D8D7-3691-8328-2B24976DE379}" name="Source">
+      <GROUP id="{7440F3A3-673E-ECD2-45F9-5BD60CFBB325}" name="Audio">
+        <FILE id="m2XCT1" name="Audio.cpp" compile="1" resource="0" file="Source/Audio.cpp"/>
+        <FILE id="CjH7Y9" name="Audio.h" compile="0" resource="0" file="Source/Audio.h"/>
+      </GROUP>
+      <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="vve2Rb" name="UIElementProperties.h" compile="0" resource="0"
+              file="Source/UIElementProperties.h"/>
+        <FILE id="crXBLX" name="AudioFilePlayerComponent.cpp" compile="1" resource="0"
+              file="Source/AudioFilePlayerComponent.cpp"/>
+        <FILE id="gqS0s7" name="AudioFilePlayerComponent.hpp" compile="0" resource="0"
+              file="Source/AudioFilePlayerComponent.hpp"/>
+        <FILE id="Y6zKji" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+        <FILE id="Q5nLTX" name="MainComponent.cpp" compile="1" resource="0"
+              file="Source/MainComponent.cpp"/>
+      </GROUP>
       <FILE id="b1Dt8F" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="Y6zKji" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="Q5nLTX" name="MainComponent.cpp" compile="1" resource="0"
-            file="Source/MainComponent.cpp"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>

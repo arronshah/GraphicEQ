@@ -3,7 +3,8 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    setSize (600, 400);
+    setSize (1000, 600);
+    addAndMakeVisible(audioFilePlayerComponent);
 }
 
 MainComponent::~MainComponent()
@@ -26,4 +27,7 @@ void MainComponent::resized()
     // This is called when the MainComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
+    int margin = 10;
+    auto area = getLocalBounds().reduced(margin);
+    audioFilePlayerComponent.setBounds(area);
 }
