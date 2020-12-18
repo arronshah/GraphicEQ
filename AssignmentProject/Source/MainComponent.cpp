@@ -1,11 +1,16 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent(Audio& a) : audio(a)
+MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
 {
     setSize (1000, 600);
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setFilePlayer(audio.getAudioFilePlayer());
+    
+//    addAndMakeVisible(audioVisualiser);
+//    audioVisualiser.setBufferSize(512);
+//    audioVisualiser.setSamplesPerBlock(256);
+//    audioVisualiser.setColours(Colours::whitesmoke, Colours::blue);
     
 }
 
@@ -21,7 +26,7 @@ void MainComponent::paint (juce::Graphics& g)
 
     g.setFont (juce::Font (16.0f));
     g.setColour (juce::Colours::white);
-    g.drawText ("Hello World!", getLocalBounds(), juce::Justification::centred, true);
+    //g.drawText ("Hello World!", getLocalBounds(), juce::Justification::centred, true);
 }
 
 void MainComponent::resized()
@@ -32,4 +37,7 @@ void MainComponent::resized()
     int margin = 10;
     auto area = getLocalBounds().reduced(margin);
     audioFilePlayerComponent.setBounds(area);
+    
+//    auto audioVisualiserArea = area.removeFromTop(200).removeFromBottom(100);
+//    audioVisualiser.setBounds(audioVisualiserArea);
 }

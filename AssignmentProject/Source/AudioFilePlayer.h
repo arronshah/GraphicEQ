@@ -12,6 +12,13 @@
 
 #include <JuceHeader.h>
 
+enum TransportState
+{
+    Play,
+    Pause,
+    Stop
+};
+
 class AudioFilePlayer : public AudioSource
 {
 public:
@@ -22,21 +29,26 @@ public:
     ~AudioFilePlayer();
     
     /** Starts or stops playback of the file */
-    void setPlaying (bool newState);
+    void changeState (TransportState newAudioTransportState);
     
     /** Gets the current playback state of the file */
     bool isPlaying() const;
     
     /** Loads the specified file into the transport source */
-    void loadFile (const File& newFile);
+    void loadFile (const File& newFile, AudioThumbnail& audioThumbnail);
     
     //AudioSource
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    double getCurrentPosition();
     
 private:
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;    //reads audio from the file
     AudioTransportSource audioTransportSource;            // this controls the playback of a positionable audio stream, handling the starting/stopping and sample-rate conversion
     TimeSliceThread thread;
+    //AudioVisualiserComponent* audioVisualiserComponent;
+    
+    TransportState audioTransportState;
+    
 };

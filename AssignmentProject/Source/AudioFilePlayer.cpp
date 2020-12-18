@@ -21,16 +21,25 @@ AudioFilePlayer::~AudioFilePlayer()
     thread.stopThread(100);
 }
 
-void AudioFilePlayer::setPlaying(bool newState)
+void AudioFilePlayer::changeState(TransportState newAudioTransportState)
 {
-    if(newState)
+    if(newAudioTransportState != audioTransportState)
     {
-        audioTransportSource.setPosition (0.0);
-        audioTransportSource.start();
-    }
-    else
-    {
-        audioTransportSource.stop();
+        audioTransportState = newAudioTransportState;
+        
+        switch(audioTransportState)
+        {
+            case Play:
+                audioTransportSource.start();
+                break;
+            case Pause:
+                audioTransportSource.stop();
+                break;
+            case Stop:
+                audioTransportSource.stop();
+                audioTransportSource.setPosition(0.0);
+                break;
+        }
     }
 }
 
@@ -39,10 +48,10 @@ bool AudioFilePlayer::isPlaying() const
     return audioTransportSource.isPlaying();
 }
 
-void AudioFilePlayer::loadFile (const File& newFile)
+void AudioFilePlayer::loadFile (const File& newFile, AudioThumbnail& audioThumbnail)
 {
     // unload the previous file source and delete it..
-    setPlaying (false);
+    changeState (Stop);
     audioTransportSource.setSource (nullptr);
     
     // create a new file source from the file..
@@ -60,6 +69,7 @@ void AudioFilePlayer::loadFile (const File& newFile)
                                         32768, // tells it to buffer this many samples ahead
                                         &thread,
                                         reader->sampleRate);
+        audioThumbnail.setSource(new FileInputSource(newFile));
     }
 }
 
@@ -77,5 +87,10 @@ void AudioFilePlayer::releaseResources()
 void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     audioTransportSource.getNextAudioBlock (bufferToFill);
+    //audioVisualiserComponent->pushBuffer(bufferToFill);
 }
 
+double AudioFilePlayer::getCurrentPosition()
+{
+    return audioTransportSource.getCurrentPosition();
+}

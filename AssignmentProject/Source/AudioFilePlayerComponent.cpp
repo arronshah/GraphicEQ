@@ -8,13 +8,17 @@
 #include "AudioFilePlayerComponent.hpp"
 
 AudioFilePlayerComponent::AudioFilePlayerComponent() :
-        playButton("Play"),
-        audioFilePlayer(nullptr)
+        playPauseButton(">"),
+        stopButton("Stop"),
+        audioFilePlayer(nullptr),
+        audioThumbnailCache(5),
+        audioThumbnail(512, formatManager, audioThumbnailCache)
 {
-    addAndMakeVisible(playButton);
-    playButton.addListener(this);
+    addAndMakeVisible(playPauseButton);
+    playPauseButton.addListener(this);
+    addAndMakeVisible(stopButton);
+    stopButton.addListener(this);
     
-    AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     loadFileButton = std::make_unique<FilenameComponent> ("audiofile",
                                                        File(),
@@ -25,30 +29,51 @@ AudioFilePlayerComponent::AudioFilePlayerComponent() :
     loadFileButton->addListener(this);
     addAndMakeVisible (loadFileButton.get());
     
+    audioThumbnail.addChangeListener(this);
+    startTimer(40);
+    
 }
 
 void AudioFilePlayerComponent::resized()
 {
     auto bounds = getLocalBounds();
-    auto row = bounds.removeFromTop(100);
-    auto col1 = row.removeFromLeft(row.getWidth()/7);
-    playButton.setBounds(col1.reduced(UIElementProperties::buttonPadding));
+    auto row = bounds.removeFromTop(50);
+    auto audioFilePlayerControlArea = row.removeFromLeft(row.getWidth()/7);
+    
+    auto playPauseButtonArea = audioFilePlayerControlArea.removeFromLeft(audioFilePlayerControlArea.getWidth()/2);
+    
+    
+    playPauseButton.setBounds(playPauseButtonArea.reduced(UIElementProperties::buttonPadding));
+    stopButton.setBounds(audioFilePlayerControlArea.reduced(UIElementProperties::buttonPadding));
     loadFileButton->setBounds(row.reduced(UIElementProperties::buttonPadding));
+    
 }
 
 void AudioFilePlayerComponent::buttonClicked(Button* button)
 {
-    if (button == &playButton)
+    if (button == &playPauseButton)
     {
-        audioFilePlayer->setPlaying(!audioFilePlayer->isPlaying());
-        togglePlayButtonText();
+        if(audioFilePlayer->isPlaying())
+            audioFilePlayer->changeState(Pause);
+        else
+            audioFilePlayer->changeState(Play);
+        
+        togglePlayPauseButtonText();
+    }
+    else if (button == &stopButton)
+    {
+        if (audioFilePlayer->isPlaying())
+        {
+            togglePlayPauseButtonText();
+        }
+        audioFilePlayer->changeState(Stop);
     }
 }
 
-void AudioFilePlayerComponent::togglePlayButtonText()
+void AudioFilePlayerComponent::togglePlayPauseButtonText()
 {
-    String newText = (playButton.getButtonText() == "Play") ? "Stop" : "Play";
-    playButton.setButtonText(newText);
+    String newText = (playPauseButton.getButtonText() == ">") ? "||" : ">";
+    playPauseButton.setButtonText(newText);
 }
 
 void AudioFilePlayerComponent::filenameComponentChanged (FilenameComponent* fileComponentThatHasChanged)
@@ -59,7 +84,7 @@ void AudioFilePlayerComponent::filenameComponentChanged (FilenameComponent* file
         
         if(audioFilePlayer != nullptr && audioFile.existsAsFile())
         {
-            audioFilePlayer->loadFile(audioFile);
+            audioFilePlayer->loadFile(audioFile, audioThumbnail);
         }
         else
         {
@@ -73,4 +98,58 @@ void AudioFilePlayerComponent::filenameComponentChanged (FilenameComponent* file
 void AudioFilePlayerComponent::setFilePlayer(AudioFilePlayer *afp)
 {
     audioFilePlayer = afp;
+}
+
+void AudioFilePlayerComponent::paint (juce::Graphics& g)
+{
+    auto audioThumbnailArea = getLocalBounds().removeFromTop(130).removeFromBottom(80);
+    
+    if(audioThumbnail.getNumChannels() == 0)
+        paintIfNoFileLoaded(g, audioThumbnailArea.reduced(UIElementProperties::buttonPadding));
+    else
+        paintIfFileLoaded(g, audioThumbnailArea.reduced(UIElementProperties::buttonPadding));
+}
+
+void AudioFilePlayerComponent::paintIfNoFileLoaded (juce::Graphics& g, const juce::Rectangle<int>& audioThumbnailArea)
+{
+    g.setColour (juce::Colours::darkgrey);
+    g.fillRect (audioThumbnailArea);
+    g.setColour (juce::Colours::white);
+    g.drawFittedText ("No File Loaded", audioThumbnailArea, juce::Justification::centred, 1);
+}
+
+void AudioFilePlayerComponent::paintIfFileLoaded (juce::Graphics& g, juce::Rectangle<int> audioThumbnailArea)
+{
+    g.setColour (juce::Colours::darkgrey);
+    g.fillRect (audioThumbnailArea);
+    
+    g.setColour (juce::Colours::darkturquoise);
+    
+    float audioFileLength = audioThumbnail.getTotalLength();
+    audioThumbnail.drawChannels (g, audioThumbnailArea, 0.0, audioFileLength, 1.0f);
+    
+    g.setColour(Colours::white);
+    double currentAudioPosition = audioFilePlayer->getCurrentPosition();
+    auto drawPosition = (currentAudioPosition / audioFileLength) * (float) audioThumbnailArea.getWidth() + (float) audioThumbnailArea.getX();
+    g.drawLine (drawPosition, (float) audioThumbnailArea.getY(), drawPosition,
+                (float) audioThumbnailArea.getBottom(), 2.0f);
+    
+    auto x = audioThumbnailArea.removeFromLeft(drawPosition - UIElementProperties::buttonPadding);
+    g.setColour(Colours::grey);
+    g.setOpacity(0.7);
+    g.fillRect(x);
+    
+}
+
+void AudioFilePlayerComponent::changeListenerCallback (juce::ChangeBroadcaster* source)
+{
+    if (source == &audioThumbnail)
+    {
+        repaint();
+    }
+}
+
+void AudioFilePlayerComponent::timerCallback()
+{
+    repaint();
 }
