@@ -35,13 +35,15 @@ public:
     bool isPlaying() const;
     
     /** Loads the specified file into the transport source */
-    void loadFile (const File& newFile, AudioThumbnail& audioThumbnail);
+    void loadFile (const File& newFile);
     
     //AudioSource
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
     double getCurrentPosition();
+    void updatePosition(float newPosition);
+    double getLengthOfFileInSeconds();
     
 private:
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;    //reads audio from the file

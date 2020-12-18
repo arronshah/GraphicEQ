@@ -5,7 +5,8 @@ MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
 {
     setSize (1000, 600);
     addAndMakeVisible(audioFilePlayerComponent);
-    audioFilePlayerComponent.setFilePlayer(audio.getAudioFilePlayer());
+    audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
+    
     
 //    addAndMakeVisible(audioVisualiser);
 //    audioVisualiser.setBufferSize(512);
@@ -35,7 +36,7 @@ void MainComponent::resized()
     // If you add any child components, this is where you should
     // update their positions.
     int margin = 10;
-    auto area = getLocalBounds().reduced(margin);
+    auto area = getLocalBounds().reduced(margin).removeFromTop(130);
     audioFilePlayerComponent.setBounds(area);
     
 //    auto audioVisualiserArea = area.removeFromTop(200).removeFromBottom(100);

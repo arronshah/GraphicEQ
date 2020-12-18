@@ -13,6 +13,10 @@
               file="Source/AudioFilePlayer.h"/>
       </GROUP>
       <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="seg6Ds" name="AudioThumbnailComponent.cpp" compile="1" resource="0"
+              file="Source/AudioThumbnailComponent.cpp"/>
+        <FILE id="YEka1f" name="AudioThumbnailComponent.h" compile="0" resource="0"
+              file="Source/AudioThumbnailComponent.h"/>
         <FILE id="vve2Rb" name="UIElementProperties.h" compile="0" resource="0"
               file="Source/UIElementProperties.h"/>
         <FILE id="crXBLX" name="AudioFilePlayerComponent.cpp" compile="1" resource="0"

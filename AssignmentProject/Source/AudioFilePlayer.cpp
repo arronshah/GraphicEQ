@@ -48,7 +48,7 @@ bool AudioFilePlayer::isPlaying() const
     return audioTransportSource.isPlaying();
 }
 
-void AudioFilePlayer::loadFile (const File& newFile, AudioThumbnail& audioThumbnail)
+void AudioFilePlayer::loadFile (const File& newFile)
 {
     // unload the previous file source and delete it..
     changeState (Stop);
@@ -69,7 +69,6 @@ void AudioFilePlayer::loadFile (const File& newFile, AudioThumbnail& audioThumbn
                                         32768, // tells it to buffer this many samples ahead
                                         &thread,
                                         reader->sampleRate);
-        audioThumbnail.setSource(new FileInputSource(newFile));
     }
 }
 
@@ -93,4 +92,14 @@ void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToF
 double AudioFilePlayer::getCurrentPosition()
 {
     return audioTransportSource.getCurrentPosition();
+}
+
+double AudioFilePlayer::getLengthOfFileInSeconds()
+{
+    return audioTransportSource.getLengthInSeconds();
+}
+
+void AudioFilePlayer::updatePosition(float newPosition)
+{
+    audioTransportSource.setPosition(newPosition);
 }

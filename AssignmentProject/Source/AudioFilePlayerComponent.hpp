@@ -10,12 +10,11 @@
 #include <JuceHeader.h>
 #include "UIElementProperties.h"
 #include "AudioFilePlayer.h"
+#include "AudioThumbnailComponent.h"
 
 class AudioFilePlayerComponent : public Component,
                                  private Button::Listener,
-                                 private FilenameComponentListener,
-                                 private ChangeListener,
-                                 private Timer
+                                 private FilenameComponentListener
 {
 public:
     AudioFilePlayerComponent();
@@ -23,12 +22,8 @@ public:
     void resized() override;
     void buttonClicked(Button* button) override;
     void togglePlayPauseButtonText();
-    void setFilePlayer(AudioFilePlayer* afp);
-    void changeListenerCallback (juce::ChangeBroadcaster* source) override;
-    void paint (juce::Graphics& g) override;
-    void paintIfNoFileLoaded (juce::Graphics& g, const juce::Rectangle<int>& thumbnailBounds);
-    void paintIfFileLoaded (juce::Graphics& g, juce::Rectangle<int> thumbnailBounds);
-    void timerCallback() override;
+    void paint (juce::Graphics&) override;
+    void setAudioFilePlayer(AudioFilePlayer* afp);
     
 private:
     void filenameComponentChanged (FilenameComponent* fileComponentThatHasChanged) override;
@@ -37,7 +32,5 @@ private:
     std::unique_ptr<FilenameComponent> loadFileButton;
     AudioFormatManager formatManager;
     AudioFilePlayer* audioFilePlayer;
-    AudioThumbnailCache audioThumbnailCache;
-    AudioThumbnail audioThumbnail;
-    
+    AudioThumbnailComponent audioThumbnailComponent;
 };
