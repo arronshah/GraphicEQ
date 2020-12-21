@@ -3,15 +3,21 @@
 //==============================================================================
 MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
 {
-    setSize (1000, 600);
+    setSize (900, 750);
+    //setLookAndFeel(&lookAndFeel);
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
+    analyserComponent.setAnalyser(audio.getAnalyser());
+    
+    audio.setAudioVisualiserComponent(&audioVisualiser);
+    addAndMakeVisible(audioVisualiser);
+    audioVisualiser.setBufferSize(512);
+    audioVisualiser.setSamplesPerBlock(256);
+    audioVisualiser.setColours(Colours::whitesmoke, Colours::blue);
+    
+    addAndMakeVisible(analyserComponent);
     
     
-//    addAndMakeVisible(audioVisualiser);
-//    audioVisualiser.setBufferSize(512);
-//    audioVisualiser.setSamplesPerBlock(256);
-//    audioVisualiser.setColours(Colours::whitesmoke, Colours::blue);
     
 }
 
@@ -36,9 +42,15 @@ void MainComponent::resized()
     // If you add any child components, this is where you should
     // update their positions.
     int margin = 10;
-    auto area = getLocalBounds().reduced(margin).removeFromTop(130);
-    audioFilePlayerComponent.setBounds(area);
+    auto localBoundsWithMargin = getLocalBounds().reduced(margin);
+    auto filePlayerArea = localBoundsWithMargin.removeFromTop(130);
+    audioFilePlayerComponent.setBounds(filePlayerArea);
     
-//    auto audioVisualiserArea = area.removeFromTop(200).removeFromBottom(100);
+//    auto audioVisualiserArea = localBoundsWithMargin.removeFromTop(100);
 //    audioVisualiser.setBounds(audioVisualiserArea);
+    
+    auto analyserArea = localBoundsWithMargin.removeFromTop(400);
+    analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    
+    
 }

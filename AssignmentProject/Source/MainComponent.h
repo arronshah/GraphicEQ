@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "AudioFilePlayerComponent.hpp"
 #include "Audio.h"
+#include "AnalyserComponent.h"
 
 //==============================================================================
 /*
@@ -27,6 +28,7 @@ private:
     AudioFilePlayerComponent audioFilePlayerComponent;
     AudioVisualiserComponent audioVisualiser;
     Audio& audio;
+    AnalyserComponent analyserComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

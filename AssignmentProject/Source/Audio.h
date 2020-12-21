@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "AudioFilePlayer.h"
+#include "Analyser.h"
 
 class Audio : public AudioIODeviceCallback
 {
@@ -33,8 +34,11 @@ public:
     void audioDeviceAboutToStart (AudioIODevice* device) override;
     void audioDeviceStopped() override;
     AudioFilePlayer* getAudioFilePlayer();
+    Analyser* getAnalyser();
+    void setAudioVisualiserComponent(AudioVisualiserComponent* visualiser);
 private:
     AudioDeviceManager audioDeviceManager;
     AudioSourcePlayer audioSourcePlayer;
     AudioFilePlayer audioFilePlayer;
+    Analyser analyser;
 };

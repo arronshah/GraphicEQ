@@ -14,12 +14,13 @@ Audio::Audio()
 {
     //set the filePlayer as the audio source
     audioSourcePlayer.setSource (&audioFilePlayer);
+    audioFilePlayer.setAnalyser(&analyser);
     
     auto errorMessage = audioDeviceManager.initialiseWithDefaultDevices (1, 2);
     if ( ! errorMessage.isEmpty())
         DBG (errorMessage);
     audioDeviceManager.addAudioCallback (this);
-    
+
 }
 
 Audio::~Audio()
@@ -70,4 +71,14 @@ void Audio::audioDeviceStopped()
 AudioFilePlayer* Audio::getAudioFilePlayer()
 {
     return &audioFilePlayer;
+}
+
+void Audio::setAudioVisualiserComponent(AudioVisualiserComponent* visualiser)
+{
+    audioFilePlayer.setAudioVisualiserComponent(visualiser);
+}
+
+Analyser* Audio::getAnalyser()
+{
+    return &analyser;
 }

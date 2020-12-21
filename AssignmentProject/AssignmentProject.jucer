@@ -5,14 +5,26 @@
   <MAINGROUP id="R92xs7" name="AssignmentProject">
     <GROUP id="{27C385CB-D8D7-3691-8328-2B24976DE379}" name="Source">
       <GROUP id="{7440F3A3-673E-ECD2-45F9-5BD60CFBB325}" name="Audio">
+        <FILE id="E9cguJ" name="Analyser.cpp" compile="1" resource="0" file="Source/Analyser.cpp"/>
+        <FILE id="cKLzyG" name="Analyser.h" compile="0" resource="0" file="Source/Analyser.h"/>
         <FILE id="m2XCT1" name="Audio.cpp" compile="1" resource="0" file="Source/Audio.cpp"/>
         <FILE id="CjH7Y9" name="Audio.h" compile="0" resource="0" file="Source/Audio.h"/>
         <FILE id="Uj3SqD" name="AudioFilePlayer.cpp" compile="1" resource="0"
               file="Source/AudioFilePlayer.cpp"/>
         <FILE id="yMwJ17" name="AudioFilePlayer.h" compile="0" resource="0"
               file="Source/AudioFilePlayer.h"/>
+        <FILE id="YECNJm" name="CircularBuffer.cpp" compile="1" resource="0"
+              file="Source/CircularBuffer.cpp"/>
+        <FILE id="ak0TiJ" name="CircularBuffer.h" compile="0" resource="0"
+              file="Source/CircularBuffer.h"/>
       </GROUP>
       <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="gI30SH" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
+        <FILE id="ZHJqrc" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
+        <FILE id="FUlmb7" name="AnalyserComponent.cpp" compile="1" resource="0"
+              file="Source/AnalyserComponent.cpp"/>
+        <FILE id="rW1p7X" name="AnalyserComponent.h" compile="0" resource="0"
+              file="Source/AnalyserComponent.h"/>
         <FILE id="seg6Ds" name="AudioThumbnailComponent.cpp" compile="1" resource="0"
               file="Source/AudioThumbnailComponent.cpp"/>
         <FILE id="YEka1f" name="AudioThumbnailComponent.h" compile="0" resource="0"
@@ -28,6 +40,7 @@
               file="Source/MainComponent.cpp"/>
       </GROUP>
       <FILE id="b1Dt8F" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="fQNEQK" name="Queue.h" compile="0" resource="0" file="Source/Queue.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>

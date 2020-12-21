@@ -13,6 +13,7 @@
 AudioFilePlayer::AudioFilePlayer() : thread("AudioFileThread")
 {
     thread.startThread();
+    
 }
 
 AudioFilePlayer::~AudioFilePlayer()
@@ -85,8 +86,22 @@ void AudioFilePlayer::releaseResources()
 
 void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
+    
     audioTransportSource.getNextAudioBlock (bufferToFill);
-    //audioVisualiserComponent->pushBuffer(bufferToFill);
+    
+    if(audioVisualiser != nullptr)
+        audioVisualiser->pushBuffer(bufferToFill);
+    
+    if(analyser != nullptr)
+    {
+        if (bufferToFill.buffer->getNumChannels() > 0)
+        {
+            auto* channelData = bufferToFill.buffer->getReadPointer (0, bufferToFill.startSample);
+            
+            for (auto i = 0; i < bufferToFill.numSamples; ++i)
+                analyser->pushSampleToQueue (channelData[i]);
+        }
+    }
 }
 
 double AudioFilePlayer::getCurrentPosition()
@@ -102,4 +117,14 @@ double AudioFilePlayer::getLengthOfFileInSeconds()
 void AudioFilePlayer::updatePosition(float newPosition)
 {
     audioTransportSource.setPosition(newPosition);
+}
+
+void AudioFilePlayer::setAudioVisualiserComponent(AudioVisualiserComponent* visualiser)
+{
+    audioVisualiser = visualiser;
+}
+
+void AudioFilePlayer::setAnalyser(Analyser* analyserRef)
+{
+    analyser = analyserRef;
 }

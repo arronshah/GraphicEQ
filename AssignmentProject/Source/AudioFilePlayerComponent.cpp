@@ -49,6 +49,7 @@ void AudioFilePlayerComponent::resized()
 void AudioFilePlayerComponent::paint (juce::Graphics& g)
 {
     
+    
 }
 
 void AudioFilePlayerComponent::buttonClicked(Button* button)

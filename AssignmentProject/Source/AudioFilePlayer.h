@@ -11,6 +11,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "CircularBuffer.h"
+#include "Analyser.h"
 
 enum TransportState
 {
@@ -44,13 +46,15 @@ public:
     double getCurrentPosition();
     void updatePosition(float newPosition);
     double getLengthOfFileInSeconds();
+    void setAudioVisualiserComponent(AudioVisualiserComponent* visualiser);
+    void setAnalyser(Analyser* analyserRef);
     
 private:
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;    //reads audio from the file
     AudioTransportSource audioTransportSource;            // this controls the playback of a positionable audio stream, handling the starting/stopping and sample-rate conversion
     TimeSliceThread thread;
-    //AudioVisualiserComponent* audioVisualiserComponent;
-    
     TransportState audioTransportState;
+    AudioVisualiserComponent* audioVisualiser {nullptr};
+    Analyser* analyser {nullptr};
     
 };
