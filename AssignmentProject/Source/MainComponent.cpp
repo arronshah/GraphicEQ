@@ -8,15 +8,16 @@ MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
     analyserComponent.setAnalyser(audio.getAnalyser());
+    filterComponent.setValueTree(audio.getFilterValueTree());
     
-    audio.setAudioVisualiserComponent(&audioVisualiser);
-    addAndMakeVisible(audioVisualiser);
-    audioVisualiser.setBufferSize(512);
-    audioVisualiser.setSamplesPerBlock(256);
-    audioVisualiser.setColours(Colours::whitesmoke, Colours::blue);
+//    audio.setAudioVisualiserComponent(&audioVisualiser);
+//    addAndMakeVisible(audioVisualiser);
+//    audioVisualiser.setBufferSize(512);
+//    audioVisualiser.setSamplesPerBlock(256);
+//    audioVisualiser.setColours(Colours::whitesmoke, Colours::blue);
     
     addAndMakeVisible(analyserComponent);
-    
+    addAndMakeVisible(filterComponent);
     
     
 }
@@ -51,6 +52,10 @@ void MainComponent::resized()
     
     auto analyserArea = localBoundsWithMargin.removeFromTop(400);
     analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    
+    auto filterControlArea = localBoundsWithMargin.removeFromTop(170);
+    auto band1 = filterControlArea.removeFromLeft(filterControlArea.getWidth() / 5);
+    filterComponent.setBounds(band1);
     
     
 }

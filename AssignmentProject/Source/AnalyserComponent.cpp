@@ -25,21 +25,63 @@ void AnalyserComponent::paint(Graphics& g)
 void AnalyserComponent::drawGrid(Graphics& g)
 {
     const auto bounds = getLocalBounds();
-    const auto height = bounds.getHeight();
+    const auto height = bounds.getHeight() - 20;
     const auto width = bounds.getWidth();
     
     g.setColour(Colours::lightgrey);
-    g.setOpacity(0.3);
-    for(auto& frequency : gridFrequencies)
+    g.setOpacity(0.1);
+    
+    float linePosition = 0;
+    
+    for(auto& frequency : gridFrequencyValues)
     {
-        float linePosition = roundToInt(frequencyToProportion(frequency) * width);
+        linePosition = roundToInt(frequencyToProportion(frequency) * width);
         g.drawVerticalLine(linePosition, 0, height);
     }
+    
+    for(auto& gainLabel : gridGainValues)
+    {
+        g.setOpacity(0.5);
+        int linePosition = roundToInt(jmap (gainLabel, -84.f, 0.f, 1.0f, 0.0f) * height);
+        String gainLabelAsString;
+        gainLabelAsString << gainLabel;
+        g.drawText(gainLabelAsString, width - 45, linePosition, 40, 40, Justification::topRight);
+        
+        g.setOpacity(0.1);
+        g.drawHorizontalLine(linePosition, 0, width);
+    }
+    
+    g.setOpacity(0.5);
+    for(auto& frequencyLabel : gridFrequencyLabels)
+    {
+        linePosition = roundToInt(frequencyToProportion(frequencyLabel) * width);
+        String frequencyAsString;
+        
+        if(frequencyLabel >= 1000)
+        {
+            frequencyAsString << (frequencyLabel / 1000) << "k";
+        }
+        else
+        {
+            frequencyAsString << frequencyLabel;
+        }
+        
+        
+        g.drawText(frequencyAsString, linePosition, height, 40, 20, Justification::left);
+    }
+    
+    
+    
 }
 
 float AnalyserComponent::frequencyToProportion (float freq)
 {
     return (std::log (freq / 20.0f) / std::log (2.0f)) / 10.0f;
+}
+
+float AnalyserComponent::spectrumGainToProportion (float gain)
+{
+    return 0.f;
 }
 
 void AnalyserComponent::paintOverChildren(Graphics& g)
@@ -55,32 +97,37 @@ void AnalyserComponent::drawPath(Graphics& g)
     g.setColour (juce::Colours::paleturquoise);
     
     auto width  = getLocalBounds().getWidth();
-    auto height = getLocalBounds().getHeight();
+    auto height = getLocalBounds().getHeight() - 20;
     
     float startPointX = (float) juce::jmap (0, 0, windowSize - 1, 0, width);
     float startPointY = juce::jmap (windowData[0], 0.0f, 1.0f, (float) height, 0.0f);
     
-    if(!isnan(startPointX) || !isnan(startPointY))
+    if(!isnan(startPointY)){
         path.startNewSubPath(startPointX, startPointY);
     
-    for (int i = 1; i < windowSize; i++)
-    {
-        float pointX = (float) juce::jmap (i, 0, windowSize - 1, 0, width);
-        float pointY = juce::jmap (windowData[i], 0.0f, 1.0f, (float) height, 0.0f);
-        path.lineTo( pointX, pointY);
-    }
+        for (int i = 1; i < windowSize; i++)
+        {
+            float pointX = (float) juce::jmap (i, 0, windowSize - 1, 0, width);
+            float pointY = juce::jmap (windowData[i], 0.0f, 1.0f, (float) height, 0.0f);
+            
+            if(!isnan(pointY)){
+                path.lineTo( pointX, pointY);
+            }
+            
+        }
     
-    Point<float> end((float) width, (float) height);
-    Point<float> start(0.f, (float) height);
-    path.lineTo(end);
-    path.lineTo(start);
-    path.closeSubPath();
-    g.strokePath(path, PathStrokeType(1.f));
-    ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
-    FillType fill(gradient);
-    fill.setOpacity(0.4);
-    g.setFillType(fill);
-    g.fillPath(path);
+        Point<float> end((float) width, (float) height);
+        Point<float> start(0.f, (float) height);
+        path.lineTo(end);
+        path.lineTo(start);
+        path.closeSubPath();
+        g.strokePath(path, PathStrokeType(1.f));
+        ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
+        FillType fill(gradient);
+        fill.setOpacity(0.4);
+        g.setFillType(fill);
+        g.fillPath(path);
+    }
 }
 
 void AnalyserComponent::timerCallback()

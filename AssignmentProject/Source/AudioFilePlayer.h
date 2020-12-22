@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "CircularBuffer.h"
 #include "Analyser.h"
+#include "Filter.h"
 
 enum TransportState
 {
@@ -48,6 +49,7 @@ public:
     double getLengthOfFileInSeconds();
     void setAudioVisualiserComponent(AudioVisualiserComponent* visualiser);
     void setAnalyser(Analyser* analyserRef);
+    void setFilter(Filter* filterRef);
     
 private:
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;    //reads audio from the file
@@ -56,5 +58,7 @@ private:
     TransportState audioTransportState;
     AudioVisualiserComponent* audioVisualiser {nullptr};
     Analyser* analyser {nullptr};
+    Filter* filter {nullptr};
+    
     
 };

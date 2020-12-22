@@ -15,6 +15,7 @@ Audio::Audio()
     //set the filePlayer as the audio source
     audioSourcePlayer.setSource (&audioFilePlayer);
     audioFilePlayer.setAnalyser(&analyser);
+    audioFilePlayer.setFilter(&filter);
     
     auto errorMessage = audioDeviceManager.initialiseWithDefaultDevices (1, 2);
     if ( ! errorMessage.isEmpty())
@@ -81,4 +82,9 @@ void Audio::setAudioVisualiserComponent(AudioVisualiserComponent* visualiser)
 Analyser* Audio::getAnalyser()
 {
     return &analyser;
+}
+ 
+ValueTree* Audio::getFilterValueTree()
+{
+    return filter.getParameterValueTree();
 }

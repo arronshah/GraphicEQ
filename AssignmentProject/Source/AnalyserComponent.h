@@ -29,6 +29,7 @@ public:
     void drawGrid(Graphics& g);
     float frequencyToProportion (float freq);
     void paintOverChildren(Graphics& g) override;
+    float spectrumGainToProportion (float gain);
     
     
 private:
@@ -37,7 +38,11 @@ private:
     float windowData[windowSize];
     Path path;
     bool gridIsDrawn = false;
-    float gridFrequencies[25] = {
-        20.f, 30.f, 40.f, 50.f, 60.f, 70.f, 80.f, 90.f, 200.f, 300.f, 400.f, 500.f, 600.f, 700.f, 800.f, 900.f, 2000.f, 3000.f, 4000.f, 5000.f, 6000.f, 7000.f, 8000.f, 9000.f, 20000.f
+    float gridFrequencyValues[28] = {
+        20.f, 30.f, 40.f, 50.f, 60.f, 70.f, 80.f, 90.f, 100.f, 200.f, 300.f, 400.f, 500.f, 600.f, 700.f, 800.f, 900.f, 1000.f, 2000.f, 3000.f, 4000.f, 5000.f, 6000.f, 7000.f, 8000.f, 9000.f, 10000.f, 20000.f
     };
+    
+    float gridFrequencyLabels[9] = {20.f, 50.f, 100.f, 200.f, 500.f, 1000.f, 2000.f, 5000.f, 10000.f};
+    
+    float gridGainValues[7] = {0.f, -12.f, -24.f, -36.f, -48.f, -60.f, -72.f};
 };
