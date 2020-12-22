@@ -88,3 +88,8 @@ ValueTree* Audio::getFilterValueTree()
 {
     return filter.getParameterValueTree();
 }
+
+Filter* Audio::getFilter()
+{
+    return &filter;
+}

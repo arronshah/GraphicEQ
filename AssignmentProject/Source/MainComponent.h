@@ -5,6 +5,7 @@
 #include "Audio.h"
 #include "AnalyserComponent.h"
 #include "FilterComponent.h"
+#include "FilterResponseCurveComponent.h"
 
 //==============================================================================
 /*
@@ -31,5 +32,6 @@ private:
     Audio& audio;
     AnalyserComponent analyserComponent;
     FilterComponent filterComponent;
+    FilterResponseCurveComponent filterResponseCurveComponent;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

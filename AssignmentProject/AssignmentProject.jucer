@@ -21,6 +21,10 @@
         <FILE id="lYJNeu" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
       </GROUP>
       <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="pQF49H" name="FilterResponseCurveComponent.cpp" compile="1"
+              resource="0" file="Source/FilterResponseCurveComponent.cpp"/>
+        <FILE id="eiVtx4" name="FilterResponseCurveComponent.h" compile="0"
+              resource="0" file="Source/FilterResponseCurveComponent.h"/>
         <FILE id="i66aaH" name="FilterComponent.cpp" compile="1" resource="0"
               file="Source/FilterComponent.cpp"/>
         <FILE id="bFEI8D" name="FilterComponent.h" compile="0" resource="0"

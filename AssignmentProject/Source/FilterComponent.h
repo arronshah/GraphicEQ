@@ -13,29 +13,33 @@
 #include "Filter.h"
 #include "UIElementProperties.h"
 #include <memory>
+#include "FilterResponseCurveComponent.h"
 
 class FilterComponent : public Component,
-                               Slider::Listener,
-                               Button::Listener,
-                               ComboBox::Listener
+                        public Slider::Listener
 {
 public:
     FilterComponent();
     ~FilterComponent();
     void paint (juce::Graphics&) override;
     void resized() override;
-    void setValueTree(ValueTree* valueTreeRef);
-    virtual void sliderValueChanged (Slider* slider) override;
-    virtual void buttonClicked (Button*) override;
-    virtual void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    
+    void createValueTreeAttachments(ValueTree* valueTreeRef);
+    void sliderValueChanged(Slider* slider) override;
+    void setFilterResponseComponent(FilterResponseCurveComponent* frcc);
     
 private:
     Slider frequencySlider;
+    Slider gainSlider;
+    Slider resonanceSlider;
     ComboBox filterType;
     ToggleButton filterOn;
-    ValueTree* valueTree {nullptr};
     
     ValueTreeSliderAttachment* frequencySliderAttachment;
+    ValueTreeSliderAttachment* resonanceSliderAttachment;
+    ValueTreeSliderAttachment* gainSliderAttachment;
+    
+    FilterResponseCurveComponent* filterResponseComponent {nullptr};
+    
+    int x = 1;
     
 };

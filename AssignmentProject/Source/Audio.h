@@ -37,6 +37,7 @@ public:
     AudioFilePlayer* getAudioFilePlayer();
     Analyser* getAnalyser();
     ValueTree* getFilterValueTree();
+    Filter* getFilter();
     void setAudioVisualiserComponent(AudioVisualiserComponent* visualiser);
 private:
     AudioDeviceManager audioDeviceManager;

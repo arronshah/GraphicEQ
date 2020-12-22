@@ -12,23 +12,44 @@
 
 FilterComponent::FilterComponent()
 {
+    addAndMakeVisible(frequencySlider);
     frequencySlider.setSliderStyle(Slider::Rotary);
     frequencySlider.setRange(20, 20000);
     frequencySlider.setSkewFactorFromMidPoint(500);
 
-    addAndMakeVisible(frequencySlider);
+    addAndMakeVisible(resonanceSlider);
+    resonanceSlider.setRange(0.1, 18);
+    resonanceSlider.setSliderStyle(Slider::Rotary);
+    resonanceSlider.setSkewFactorFromMidPoint(1);
+    
+    addAndMakeVisible(gainSlider);
+    gainSlider.setSliderStyle(Slider::Rotary);
+    gainSlider.setRange(0.f, 1.f);
+    
+    frequencySlider.addListener(this);
+    resonanceSlider.addListener(this);
 }
 
 FilterComponent::~FilterComponent()
 {
     delete frequencySliderAttachment;
+    delete resonanceSliderAttachment;
+    delete gainSliderAttachment;
 }
 
-void FilterComponent::setValueTree(ValueTree* valueTreeRef)
+void FilterComponent::sliderValueChanged(Slider* slider)
 {
-    valueTree = valueTreeRef;
+    //DBG("slider value changed" << x++);
     
-    frequencySliderAttachment = new ValueTreeSliderAttachment(*valueTree, &frequencySlider, "frequency");
+    if (filterResponseComponent != nullptr)
+        filterResponseComponent->updatePath();
+}
+
+void FilterComponent::createValueTreeAttachments(ValueTree* valueTreeRef)
+{   
+    frequencySliderAttachment = new ValueTreeSliderAttachment(*valueTreeRef, &frequencySlider, "frequency");
+    resonanceSliderAttachment = new ValueTreeSliderAttachment(*valueTreeRef, &resonanceSlider, "resonance");
+    gainSliderAttachment = new ValueTreeSliderAttachment(*valueTreeRef, &gainSlider, "gain");
 }
 
 void FilterComponent::paint (juce::Graphics&)
@@ -39,21 +60,14 @@ void FilterComponent::paint (juce::Graphics&)
 void FilterComponent::resized()
 {
     auto bounds = getLocalBounds();
-    frequencySlider.setBounds(bounds.removeFromTop(bounds.getHeight() / 3).reduced(UIElementProperties::buttonPadding));
+    auto rowSize = bounds.getHeight() / 3;
+    frequencySlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
+    resonanceSlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
+    gainSlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
     
 }
 
-void FilterComponent::sliderValueChanged (Slider* slider)
+void FilterComponent::setFilterResponseComponent(FilterResponseCurveComponent* frcc)
 {
-    
-}
-
-void FilterComponent::buttonClicked (Button*)
-{
-    
-}
- 
-void FilterComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
-{
-    
+    filterResponseComponent = frcc;
 }

@@ -8,7 +8,9 @@ MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
     analyserComponent.setAnalyser(audio.getAnalyser());
-    filterComponent.setValueTree(audio.getFilterValueTree());
+    filterComponent.createValueTreeAttachments(audio.getFilterValueTree());
+    filterResponseCurveComponent.setFilter(audio.getFilter());
+    filterComponent.setFilterResponseComponent(&filterResponseCurveComponent);
     
 //    audio.setAudioVisualiserComponent(&audioVisualiser);
 //    addAndMakeVisible(audioVisualiser);
@@ -18,6 +20,7 @@ MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
     
     addAndMakeVisible(analyserComponent);
     addAndMakeVisible(filterComponent);
+    addAndMakeVisible(filterResponseCurveComponent);
     
     
 }
@@ -52,6 +55,7 @@ void MainComponent::resized()
     
     auto analyserArea = localBoundsWithMargin.removeFromTop(400);
     analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    filterResponseCurveComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
     
     auto filterControlArea = localBoundsWithMargin.removeFromTop(170);
     auto band1 = filterControlArea.removeFromLeft(filterControlArea.getWidth() / 5);

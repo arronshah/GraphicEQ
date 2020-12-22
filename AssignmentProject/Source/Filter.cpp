@@ -11,12 +11,18 @@
 #include "Filter.h"
 
 Filter::Filter()
-    : parameterValueTree("filterValueTree"),
-      debugListener(parameterValueTree, true)
+    : parameterValueTree("filterValueTree")
+      //debugListener(parameterValueTree, true)
 {
     parameterValueTree.setProperty("frequency", 440.f, nullptr);
-    parameterValueTree.setProperty("q-factor", 0.7, nullptr);
+    parameterValueTree.setProperty("resonance", 0.7, nullptr);
     parameterValueTree.setProperty("gain", 0.f, nullptr);
+    
+    frequencies.resize (300);
+    for (size_t i=0; i < frequencies.size(); ++i) {
+        frequencies [i] = 20.0 * std::pow (2.0, i / 30.0);
+    }
+    magnitudes.resize (frequencies.size());
 }
 
 ValueTree* Filter::getParameterValueTree()
@@ -26,25 +32,38 @@ ValueTree* Filter::getParameterValueTree()
 
 void Filter::process(dsp::AudioBlock<float> audioBlock)
 {
-    stateVariableFilter.process(dsp::ProcessContextReplacing<float>(audioBlock));
     updateParameters();
+    lowPassFilter.process(dsp::ProcessContextReplacing<float>(audioBlock));
 }
 
 void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
 {
+    lastSampleRate = sampleRate;
+    
     dsp::ProcessSpec processSpec;
     processSpec.sampleRate = sampleRate;
     processSpec.maximumBlockSize = samplesPerBlockExpected;
     processSpec.numChannels = 2;
-    stateVariableFilter.prepare(processSpec);
     
-    stateVariableFilter.setType(dsp::StateVariableTPTFilterType::lowpass);
-    stateVariableFilter.setCutoffFrequency(parameterValueTree.getProperty("frequency"));
-    stateVariableFilter.setResonance(0.7);
+    lowPassFilter.prepare(processSpec);
+    lowPassFilter.reset();
+    updateParameters();
     
 }
 
 void Filter::updateParameters()
 {
-    stateVariableFilter.setCutoffFrequency(parameterValueTree.getProperty("frequency"));
+    float frequency = parameterValueTree.getProperty("frequency");
+    float resonance = parameterValueTree.getProperty("resonance");
+    *lowPassFilter.state = *dsp::IIR::Coefficients<float>::makeLowPass(lastSampleRate, frequency, resonance);
+    lowPassFilter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
+}
+
+std::vector<double>* Filter::getFrequencies()
+{
+    return &frequencies;
+}
+std::vector<double>& Filter::getMagnitudes()
+{
+    return magnitudes;
 }

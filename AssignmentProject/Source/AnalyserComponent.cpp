@@ -99,35 +99,30 @@ void AnalyserComponent::drawPath(Graphics& g)
     auto width  = getLocalBounds().getWidth();
     auto height = getLocalBounds().getHeight() - 20;
     
-    float startPointX = (float) juce::jmap (0, 0, windowSize - 1, 0, width);
-    float startPointY = juce::jmap (windowData[0], 0.0f, 1.0f, (float) height, 0.0f);
-    
-    if(!isnan(startPointY)){
-        path.startNewSubPath(startPointX, startPointY);
-    
-        for (int i = 1; i < windowSize; i++)
-        {
-            float pointX = (float) juce::jmap (i, 0, windowSize - 1, 0, width);
-            float pointY = juce::jmap (windowData[i], 0.0f, 1.0f, (float) height, 0.0f);
-            
-            if(!isnan(pointY)){
-                path.lineTo( pointX, pointY);
-            }
-            
+    path.startNewSubPath(0.f, height);
+
+    for (int i = 1; i < windowSize; i++)
+    {
+        float pointX = (float) juce::jmap (i, 0, windowSize - 1, 0, width);
+        float pointY = juce::jmap (windowData[i], 0.0f, 1.0f, (float) height, 0.0f);
+        
+        if(!isnan(pointY)){
+            path.lineTo( pointX, pointY);
         }
-    
-        Point<float> end((float) width, (float) height);
-        Point<float> start(0.f, (float) height);
-        path.lineTo(end);
-        path.lineTo(start);
-        path.closeSubPath();
-        g.strokePath(path, PathStrokeType(1.f));
-        ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
-        FillType fill(gradient);
-        fill.setOpacity(0.4);
-        g.setFillType(fill);
-        g.fillPath(path);
+        
     }
+
+    Point<float> end((float) width, (float) height);
+    Point<float> start(0.f, (float) height);
+    path.lineTo(end);
+    path.lineTo(start);
+    path.closeSubPath();
+    g.strokePath(path, PathStrokeType(1.f));
+    ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
+    FillType fill(gradient);
+    fill.setOpacity(0.4);
+    g.setFillType(fill);
+    g.fillPath(path);
 }
 
 void AnalyserComponent::timerCallback()

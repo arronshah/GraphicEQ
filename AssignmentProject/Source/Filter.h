@@ -20,9 +20,15 @@ public:
     void process(dsp::AudioBlock<float> buffer);
     void prepare(int samplesPerBlockExpected, double sampleRate);
     void updateParameters();
+    std::vector<double>* getFrequencies();
+    std::vector<double>& getMagnitudes();
     
 private:
     ValueTree parameterValueTree;
-    ValueTreeDebugListener debugListener;
-    dsp::StateVariableTPTFilter<float> stateVariableFilter;
+    //ValueTreeDebugListener debugListener;
+    dsp::ProcessorDuplicator <dsp::IIR::Filter<float>, dsp::IIR::Coefficients <float>> lowPassFilter;;
+    float lastSampleRate = 44100;
+    
+    std::vector<double> frequencies;
+    std::vector<double> magnitudes;
 };
