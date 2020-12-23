@@ -11,7 +11,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "CircularBuffer.h"
 #include "Analyser.h"
 #include "Filter.h"
 
@@ -47,18 +46,16 @@ public:
     double getCurrentPosition();
     void updatePosition(float newPosition);
     double getLengthOfFileInSeconds();
-    void setAudioVisualiserComponent(AudioVisualiserComponent* visualiser);
     void setAnalyser(Analyser* analyserRef);
-    void setFilter(Filter* filterRef);
+    void setFilter(Filter* filterRef, int index);
     
 private:
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;    //reads audio from the file
     AudioTransportSource audioTransportSource;            // this controls the playback of a positionable audio stream, handling the starting/stopping and sample-rate conversion
     TimeSliceThread thread;
     TransportState audioTransportState;
-    AudioVisualiserComponent* audioVisualiser {nullptr};
     Analyser* analyser {nullptr};
-    Filter* filter {nullptr};
+    Filter* filter[3] = {nullptr, nullptr, nullptr};
     
     
 };

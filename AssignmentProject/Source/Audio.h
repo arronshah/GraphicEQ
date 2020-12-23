@@ -36,13 +36,14 @@ public:
     void audioDeviceStopped() override;
     AudioFilePlayer* getAudioFilePlayer();
     Analyser* getAnalyser();
-    ValueTree* getFilterValueTree();
-    Filter* getFilter();
-    void setAudioVisualiserComponent(AudioVisualiserComponent* visualiser);
+    ValueTree* getFilterValueTree(int index);
+    Filter* getFilter(int index);
 private:
     AudioDeviceManager audioDeviceManager;
     AudioSourcePlayer audioSourcePlayer;
     AudioFilePlayer audioFilePlayer;
     Analyser analyser;
-    Filter filter;
+    ValueTree parameterValueTree;
+    Filter filter[3] = {{filterType::LowPass, parameterValueTree}, {filterType::BandPass, parameterValueTree}, {filterType::HighPass, parameterValueTree}};
+    ValueTreeDebugListener debugListener;
 };

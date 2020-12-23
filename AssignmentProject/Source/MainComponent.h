@@ -28,12 +28,11 @@ private:
     //==============================================================================
     // Your private member variables go here...
     AudioFilePlayerComponent audioFilePlayerComponent;
-    AudioVisualiserComponent audioVisualiser;
     Audio& audio;
     AnalyserComponent analyserComponent;
-    FilterComponent filterComponent;
-    FilterResponseCurveComponent filterResponseCurveComponent;
     
+    std::array<FilterComponent, 3> filterComponent;
+    std::array<FilterResponseCurveComponent, 3> filterResponseCurveComponent;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

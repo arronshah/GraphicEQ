@@ -24,10 +24,10 @@ public:
     ~FilterComponent();
     void paint (juce::Graphics&) override;
     void resized() override;
-    void createValueTreeAttachments();
-    void setFilter(Filter* filterRef);
+    void createValueTreeAttachments(int index);
+    void setFilter(Filter* filterRef, int index);
     void sliderValueChanged(Slider* slider) override;
-    void setFilterResponseComponent(FilterResponseCurveComponent* frcc);
+    void setFilterResponseComponent(FilterResponseCurveComponent* frcc, int index);
     
 private:
     Slider frequencySlider;
@@ -41,6 +41,8 @@ private:
     ValueTreeSliderAttachment* gainSliderAttachment;
     
     FilterResponseCurveComponent* filterResponseComponent {nullptr};
-    Filter* filter;
+    Filter* filter {nullptr};
+    
+    ValueTree* node;
     
 };

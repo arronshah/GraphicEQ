@@ -13,10 +13,6 @@
               file="Source/AudioFilePlayer.cpp"/>
         <FILE id="yMwJ17" name="AudioFilePlayer.h" compile="0" resource="0"
               file="Source/AudioFilePlayer.h"/>
-        <FILE id="YECNJm" name="CircularBuffer.cpp" compile="1" resource="0"
-              file="Source/CircularBuffer.cpp"/>
-        <FILE id="ak0TiJ" name="CircularBuffer.h" compile="0" resource="0"
-              file="Source/CircularBuffer.h"/>
         <FILE id="rB4uT3" name="Filter.cpp" compile="1" resource="0" file="Source/Filter.cpp"/>
         <FILE id="lYJNeu" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
       </GROUP>
@@ -50,7 +46,6 @@
               file="Source/MainComponent.cpp"/>
       </GROUP>
       <FILE id="b1Dt8F" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="fQNEQK" name="Queue.h" compile="0" resource="0" file="Source/Queue.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>

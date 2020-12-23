@@ -11,11 +11,15 @@
 #include "Audio.h"
 
 Audio::Audio()
+    : parameterValueTree("parameterValueTree"),
+      debugListener(parameterValueTree, true)
 {
     //set the filePlayer as the audio source
     audioSourcePlayer.setSource (&audioFilePlayer);
     audioFilePlayer.setAnalyser(&analyser);
-    audioFilePlayer.setFilter(&filter);
+    
+    for(int i = 0; i < 3; i++)
+        audioFilePlayer.setFilter(&filter[i], i);
     
     auto errorMessage = audioDeviceManager.initialiseWithDefaultDevices (1, 2);
     if ( ! errorMessage.isEmpty())
@@ -74,22 +78,17 @@ AudioFilePlayer* Audio::getAudioFilePlayer()
     return &audioFilePlayer;
 }
 
-void Audio::setAudioVisualiserComponent(AudioVisualiserComponent* visualiser)
-{
-    audioFilePlayer.setAudioVisualiserComponent(visualiser);
-}
-
 Analyser* Audio::getAnalyser()
 {
     return &analyser;
 }
  
-ValueTree* Audio::getFilterValueTree()
+ValueTree* Audio::getFilterValueTree(int index)
 {
-    return filter.getParameterValueTree();
+    return filter[index].getParameterValueTree();
 }
 
-Filter* Audio::getFilter()
+Filter* Audio::getFilter(int index)
 {
-    return &filter;
+    return &filter[index];
 }

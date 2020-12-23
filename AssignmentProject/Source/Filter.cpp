@@ -10,13 +10,18 @@
 
 #include "Filter.h"
 
-Filter::Filter()
-    : parameterValueTree("filterValueTree")
-      //debugListener(parameterValueTree, true)
+Filter::Filter(enum filterType type, ValueTree& tree)
+    : filterType(type),
+      parameterValueTree(tree)
 {
-    parameterValueTree.setProperty("frequency", 440.f, nullptr);
-    parameterValueTree.setProperty("resonance", 0.7, nullptr);
-    parameterValueTree.setProperty("gain", 0.f, nullptr);
+    String filterParams;
+    filterParams << "filterParams" << filterType;
+    ValueTree node(filterParams);
+    node.setProperty("filterType", filterType, nullptr);
+    node.setProperty("frequency", 440.f, nullptr);
+    node.setProperty("resonance", 0.7, nullptr);
+    node.setProperty("gain", 0.f, nullptr);
+    parameterValueTree.addChild(node, filterType, nullptr);
     
     frequencies.resize (300);
     for (size_t i=0; i < frequencies.size(); ++i) {
@@ -36,7 +41,7 @@ ValueTree* Filter::getParameterValueTree()
 void Filter::process(dsp::AudioBlock<float> audioBlock)
 {
     updateParameters();
-    lowPassFilter.process(dsp::ProcessContextReplacing<float>(audioBlock));
+    filter.process(dsp::ProcessContextReplacing<float>(audioBlock));
 }
 
 void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
@@ -48,16 +53,17 @@ void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
     processSpec.maximumBlockSize = samplesPerBlockExpected;
     processSpec.numChannels = 2;
     
-    lowPassFilter.prepare(processSpec);
-    lowPassFilter.reset();
+    filter.prepare(processSpec);
+    filter.reset();
     updateParameters();
     
 }
 
 void Filter::updateParameters()
 {
-    float frequency = parameterValueTree.getProperty("frequency");
-    float resonance = parameterValueTree.getProperty("resonance");
+    ValueTree tree = parameterValueTree.getChild(filterType);
+    float frequency = tree.getProperty("frequency");
+    float resonance = tree.getProperty("resonance");
     
     if(frequency != prevFrequency)
     {
@@ -65,8 +71,17 @@ void Filter::updateParameters()
         prevFrequency = frequency;
     }
     
-    *lowPassFilter.state = *dsp::IIR::Coefficients<float>::makeLowPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
-    lowPassFilter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
+    if(filterType == 0){
+        *filter.state = *dsp::IIR::Coefficients<float>::makeLowPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
+    }
+    else if(filterType == 1){
+        *filter.state = *dsp::IIR::Coefficients<float>::makeBandPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
+    }
+    else{
+        *filter.state = *dsp::IIR::Coefficients<float>::makeHighPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
+    }
+    
+    filter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
     
 }
 

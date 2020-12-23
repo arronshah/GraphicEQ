@@ -35,6 +35,7 @@ FilterComponent::~FilterComponent()
     delete frequencySliderAttachment;
     delete resonanceSliderAttachment;
     delete gainSliderAttachment;
+    delete node;
 }
 
 void FilterComponent::sliderValueChanged(Slider* slider)
@@ -43,12 +44,13 @@ void FilterComponent::sliderValueChanged(Slider* slider)
         filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
 }
 
-void FilterComponent::createValueTreeAttachments()
+void FilterComponent::createValueTreeAttachments(int index)
 {
     ValueTree* tree = filter->getParameterValueTree();
-    frequencySliderAttachment = new ValueTreeSliderAttachment(*tree, &frequencySlider, "frequency");
-    resonanceSliderAttachment = new ValueTreeSliderAttachment(*tree, &resonanceSlider, "resonance");
-    gainSliderAttachment = new ValueTreeSliderAttachment(*tree, &gainSlider, "gain");
+    node = new ValueTree(tree->getChildWithProperty("filterType", index));
+    frequencySliderAttachment = new ValueTreeSliderAttachment(*node, &frequencySlider, "frequency");
+    resonanceSliderAttachment = new ValueTreeSliderAttachment(*node, &resonanceSlider, "resonance");
+    gainSliderAttachment = new ValueTreeSliderAttachment(*node, &gainSlider, "gain");
 }
 
 void FilterComponent::paint (juce::Graphics&)
@@ -66,13 +68,13 @@ void FilterComponent::resized()
     
 }
 
-void FilterComponent::setFilter(Filter* filterRef)
+void FilterComponent::setFilter(Filter* filterRef, int index)
 {
     filter = filterRef;
-    createValueTreeAttachments();
+    createValueTreeAttachments(index);
 }
 
-void FilterComponent::setFilterResponseComponent(FilterResponseCurveComponent* frcc)
+void FilterComponent::setFilterResponseComponent(FilterResponseCurveComponent* frcc, int index)
 {
     filterResponseComponent = frcc;
 }

@@ -11,10 +11,17 @@
 #pragma once
 #include <JuceHeader.h>
 
+enum filterType
+{
+    LowPass,
+    BandPass,
+    HighPass
+};
+
 class Filter
 {
 public:
-    Filter();
+    Filter(filterType type, ValueTree& tree);
     ~Filter() = default;
     ValueTree* getParameterValueTree();
     void process(dsp::AudioBlock<float> buffer);
@@ -24,13 +31,15 @@ public:
     std::vector<double>& getMagnitudes();
     
 private:
-    ValueTree parameterValueTree;
-    //ValueTreeDebugListener debugListener;
-    dsp::ProcessorDuplicator <dsp::IIR::Filter<float>, dsp::IIR::Coefficients <float>> lowPassFilter;;
+    const int filterType;
+    ValueTree& parameterValueTree;
+    dsp::ProcessorDuplicator <dsp::IIR::Filter<float>, dsp::IIR::Coefficients <float>> filter;
     float lastSampleRate = 44100;
     
     std::vector<double> frequencies;
     std::vector<double> magnitudes;
+    
+    
     
     float prevFrequency = 0;
     SmoothedValue<float, ValueSmoothingTypes::Linear> smoothedFrequency;

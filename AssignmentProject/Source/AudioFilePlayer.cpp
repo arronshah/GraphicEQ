@@ -77,8 +77,12 @@ void AudioFilePlayer::loadFile (const File& newFile)
 void AudioFilePlayer::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     audioTransportSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
-    if(filter != nullptr)
-        filter->prepare(samplesPerBlockExpected, sampleRate);
+    
+    for (int i = 0; i < 3; i++)
+    {
+        if(filter[i] != nullptr)
+            filter[i]->prepare(samplesPerBlockExpected, sampleRate);
+    }
 }
 
 void AudioFilePlayer::releaseResources()
@@ -93,15 +97,14 @@ void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToF
     
     audioTransportSource.getNextAudioBlock (bufferToFill);
     
-    if(audioVisualiser != nullptr)
-        audioVisualiser->pushBuffer(bufferToFill);
-    
-    if(filter != nullptr)
+    if(filter[2] != nullptr)
     {
         if (bufferToFill.buffer->getNumChannels() > 0)
         {
             dsp::AudioBlock<float> audioBlock(*bufferToFill.buffer);
-            filter->process(audioBlock);
+            
+            for (int i = 0; i < 3; i++)
+                filter[i]->process(audioBlock);
         }
     }
     
@@ -132,17 +135,12 @@ void AudioFilePlayer::updatePosition(float newPosition)
     audioTransportSource.setPosition(newPosition);
 }
 
-void AudioFilePlayer::setAudioVisualiserComponent(AudioVisualiserComponent* visualiser)
-{
-    audioVisualiser = visualiser;
-}
-
 void AudioFilePlayer::setAnalyser(Analyser* analyserRef)
 {
     analyser = analyserRef;
 }
 
-void AudioFilePlayer::setFilter(Filter* filterRef)
+void AudioFilePlayer::setFilter(Filter* filterRef, int index)
 {
-    filter = filterRef;
+    filter[index] = filterRef;
 }

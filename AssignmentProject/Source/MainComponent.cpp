@@ -1,7 +1,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
+MainComponent::MainComponent(Audio& a) : audio(a)
 {
     setSize (900, 750);
     //setLookAndFeel(&lookAndFeel);
@@ -10,14 +10,16 @@ MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
     
     analyserComponent.setAnalyser(audio.getAnalyser());
     
-    filterComponent.setFilterResponseComponent(&filterResponseCurveComponent);
-    filterComponent.setFilter(audio.getFilter());
-    
     addAndMakeVisible(analyserComponent);
-    addAndMakeVisible(filterComponent);
-    addAndMakeVisible(filterResponseCurveComponent);
     
-    
+    for(int i = 0; i < filterComponent.size(); i++)
+    {
+        addAndMakeVisible(filterComponent[i]);
+        filterComponent[i].setFilter(audio.getFilter(i), i);
+        
+        addAndMakeVisible(filterResponseCurveComponent[i]);
+        filterComponent[i].setFilterResponseComponent(&filterResponseCurveComponent[i], i);
+    }
 }
 
 MainComponent::~MainComponent()
@@ -45,16 +47,19 @@ void MainComponent::resized()
     auto filePlayerArea = localBoundsWithMargin.removeFromTop(130);
     audioFilePlayerComponent.setBounds(filePlayerArea);
     
-//    auto audioVisualiserArea = localBoundsWithMargin.removeFromTop(100);
-//    audioVisualiser.setBounds(audioVisualiserArea);
-    
     auto analyserArea = localBoundsWithMargin.removeFromTop(400);
     analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
-    filterResponseCurveComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    
+    for (int i = 0; i < 3; i++) {
+        filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    }
     
     auto filterControlArea = localBoundsWithMargin.removeFromTop(170);
-    auto band1 = filterControlArea.removeFromLeft(filterControlArea.getWidth() / 5);
-    filterComponent.setBounds(band1);
+    auto bandControlWidth = filterControlArea.getWidth() / 5;
     
+    for(auto& filter : filterComponent)
+    {
+        filter.setBounds(filterControlArea.removeFromLeft(bandControlWidth));
+    }
     
 }
