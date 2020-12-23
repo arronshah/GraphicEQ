@@ -31,4 +31,7 @@ private:
     
     std::vector<double> frequencies;
     std::vector<double> magnitudes;
+    
+    float prevFrequency = 0;
+    SmoothedValue<float, ValueSmoothingTypes::Linear> smoothedFrequency;
 };

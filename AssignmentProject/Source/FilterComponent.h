@@ -14,6 +14,7 @@
 #include "UIElementProperties.h"
 #include <memory>
 #include "FilterResponseCurveComponent.h"
+#include "Filter.h"
 
 class FilterComponent : public Component,
                         public Slider::Listener
@@ -23,7 +24,8 @@ public:
     ~FilterComponent();
     void paint (juce::Graphics&) override;
     void resized() override;
-    void createValueTreeAttachments(ValueTree* valueTreeRef);
+    void createValueTreeAttachments();
+    void setFilter(Filter* filterRef);
     void sliderValueChanged(Slider* slider) override;
     void setFilterResponseComponent(FilterResponseCurveComponent* frcc);
     
@@ -39,7 +41,6 @@ private:
     ValueTreeSliderAttachment* gainSliderAttachment;
     
     FilterResponseCurveComponent* filterResponseComponent {nullptr};
-    
-    int x = 1;
+    Filter* filter;
     
 };

@@ -19,10 +19,7 @@ public:
     ~FilterResponseCurveComponent() = default;
     void paint(Graphics& g);
     void resized();
-    void drawResponseCurve();
-    void setFilter(Filter* filterRef);
-    void updatePath();
+    void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags);
 private:
     Path responseCurve;
-    Filter* filter {nullptr};
 };

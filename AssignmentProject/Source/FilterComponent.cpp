@@ -39,17 +39,16 @@ FilterComponent::~FilterComponent()
 
 void FilterComponent::sliderValueChanged(Slider* slider)
 {
-    //DBG("slider value changed" << x++);
-    
     if (filterResponseComponent != nullptr)
-        filterResponseComponent->updatePath();
+        filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
 }
 
-void FilterComponent::createValueTreeAttachments(ValueTree* valueTreeRef)
-{   
-    frequencySliderAttachment = new ValueTreeSliderAttachment(*valueTreeRef, &frequencySlider, "frequency");
-    resonanceSliderAttachment = new ValueTreeSliderAttachment(*valueTreeRef, &resonanceSlider, "resonance");
-    gainSliderAttachment = new ValueTreeSliderAttachment(*valueTreeRef, &gainSlider, "gain");
+void FilterComponent::createValueTreeAttachments()
+{
+    ValueTree* tree = filter->getParameterValueTree();
+    frequencySliderAttachment = new ValueTreeSliderAttachment(*tree, &frequencySlider, "frequency");
+    resonanceSliderAttachment = new ValueTreeSliderAttachment(*tree, &resonanceSlider, "resonance");
+    gainSliderAttachment = new ValueTreeSliderAttachment(*tree, &gainSlider, "gain");
 }
 
 void FilterComponent::paint (juce::Graphics&)
@@ -65,6 +64,12 @@ void FilterComponent::resized()
     resonanceSlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
     gainSlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
     
+}
+
+void FilterComponent::setFilter(Filter* filterRef)
+{
+    filter = filterRef;
+    createValueTreeAttachments();
 }
 
 void FilterComponent::setFilterResponseComponent(FilterResponseCurveComponent* frcc)

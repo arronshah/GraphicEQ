@@ -12,21 +12,22 @@
 
 FilterResponseCurveComponent::FilterResponseCurveComponent()
 {
-    
+    responseCurve.clear();
 }
 
 void FilterResponseCurveComponent::paint(Graphics& g)
 {
-    responseCurve.clear();
-    drawResponseCurve();
     g.setColour(Colours::grey);
     g.setOpacity(1.f);
     g.strokePath(responseCurve, PathStrokeType(3.f));
-}
-
-void FilterResponseCurveComponent::setFilter(Filter* filterRef)
-{
-    filter = filterRef;
+    
+    Point<float> start(0.f, (float) getHeight() - 20);
+    Point<float> end((float) getWidth(), (float) getHeight() - 20);
+    ColourGradient gradient(Colours::grey, start, Colours::paleturquoise, end, true);
+    FillType fill(gradient);
+    fill.setOpacity(0.2);
+    g.setFillType(fill);
+    g.fillPath(responseCurve);
 }
 
 void FilterResponseCurveComponent::resized()
@@ -34,35 +35,30 @@ void FilterResponseCurveComponent::resized()
     
 }
 
-float frequencyToProportion(float frequency)
+void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags)
 {
-    return (std::log (frequency / 20.0f) / std::log (2.0f)) / 10.0f;
-}
-
-void FilterResponseCurveComponent::drawResponseCurve()
-{
-    responseCurve.startNewSubPath(0.f, getHeight() - 20);
+    responseCurve.clear();
     
-    std::vector<double>* frequencies = filter->getFrequencies();
-    std::vector<double>& mags = filter->getMagnitudes();
+    float height = getHeight() - 20;
+    float width = getWidth();
     
-    float pixelsPerDouble = 2.f * getHeight() / Decibels::decibelsToGain(24.f);
+    responseCurve.startNewSubPath(0.f, height);
     
-    const double xFactor = static_cast<double> (getWidth()) / frequencies->size();
+    float pixelsPerDouble = 2.f * height / Decibels::decibelsToGain(24.f);
+    
+    const double xFactor = static_cast<double> (width / frequencies->size());
     for (size_t i=1; i < frequencies->size(); ++i)
     {
-        responseCurve.lineTo (float (getX() + i * xFactor),
-                  float (mags [i] > 0 ? (getHeight() / 2.f) - pixelsPerDouble * std::log (mags [i]) / std::log (2) : getBottom()));
+        float x = float (getX() + i * xFactor);
+        float yCalc = float (mags [i] > 0 ? (height / 2.f) - pixelsPerDouble * std::log (mags [i]) / std::log (2) : height);
+        float y = (yCalc > height) ? height : yCalc;
+        responseCurve.lineTo (x, y);
     }
     
-    responseCurve.lineTo(getWidth(), getHeight() - 20);
+    responseCurve.lineTo(width, height);
     responseCurve.closeSubPath();
-}
-
-void FilterResponseCurveComponent::updatePath()
-{
-    if (filter != nullptr)
-        repaint();  
+    
+    repaint();
 }
 
 

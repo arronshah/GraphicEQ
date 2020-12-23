@@ -23,6 +23,9 @@ Filter::Filter()
         frequencies [i] = 20.0 * std::pow (2.0, i / 30.0);
     }
     magnitudes.resize (frequencies.size());
+    
+    smoothedFrequency.reset(lastSampleRate, 0.0001);
+    smoothedFrequency.setCurrentAndTargetValue(parameterValueTree.getProperty("frequency"));
 }
 
 ValueTree* Filter::getParameterValueTree()
@@ -55,8 +58,16 @@ void Filter::updateParameters()
 {
     float frequency = parameterValueTree.getProperty("frequency");
     float resonance = parameterValueTree.getProperty("resonance");
-    *lowPassFilter.state = *dsp::IIR::Coefficients<float>::makeLowPass(lastSampleRate, frequency, resonance);
+    
+    if(frequency != prevFrequency)
+    {
+        smoothedFrequency.setTargetValue(frequency);
+        prevFrequency = frequency;
+    }
+    
+    *lowPassFilter.state = *dsp::IIR::Coefficients<float>::makeLowPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
     lowPassFilter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
+    
 }
 
 std::vector<double>* Filter::getFrequencies()

@@ -7,16 +7,11 @@ MainComponent::MainComponent(Audio& a) :  audioVisualiser(2), audio(a)
     //setLookAndFeel(&lookAndFeel);
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
-    analyserComponent.setAnalyser(audio.getAnalyser());
-    filterComponent.createValueTreeAttachments(audio.getFilterValueTree());
-    filterResponseCurveComponent.setFilter(audio.getFilter());
-    filterComponent.setFilterResponseComponent(&filterResponseCurveComponent);
     
-//    audio.setAudioVisualiserComponent(&audioVisualiser);
-//    addAndMakeVisible(audioVisualiser);
-//    audioVisualiser.setBufferSize(512);
-//    audioVisualiser.setSamplesPerBlock(256);
-//    audioVisualiser.setColours(Colours::whitesmoke, Colours::blue);
+    analyserComponent.setAnalyser(audio.getAnalyser());
+    
+    filterComponent.setFilterResponseComponent(&filterResponseCurveComponent);
+    filterComponent.setFilter(audio.getFilter());
     
     addAndMakeVisible(analyserComponent);
     addAndMakeVisible(filterComponent);
