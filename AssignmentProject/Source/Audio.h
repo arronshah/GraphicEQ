@@ -45,5 +45,5 @@ private:
     Analyser analyser;
     ValueTree parameterValueTree;
     Filter filter[3] = {{filterType::LowPass, parameterValueTree}, {filterType::BandPass, parameterValueTree}, {filterType::HighPass, parameterValueTree}};
-    ValueTreeDebugListener debugListener;
+    //ValueTreeDebugListener debugListener;
 };

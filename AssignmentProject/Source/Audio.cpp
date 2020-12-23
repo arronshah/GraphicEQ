@@ -11,8 +11,8 @@
 #include "Audio.h"
 
 Audio::Audio()
-    : parameterValueTree("parameterValueTree"),
-      debugListener(parameterValueTree, true)
+    : parameterValueTree("parameterValueTree")
+      //debugListener(parameterValueTree, true)
 {
     //set the filePlayer as the audio source
     audioSourcePlayer.setSource (&audioFilePlayer);

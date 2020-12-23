@@ -104,7 +104,11 @@ void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToF
             dsp::AudioBlock<float> audioBlock(*bufferToFill.buffer);
             
             for (int i = 0; i < 3; i++)
-                filter[i]->process(audioBlock);
+            {
+                if(filter[i]->getCurrentState())
+                    filter[i]->process(audioBlock);
+            }
+            
         }
     }
     

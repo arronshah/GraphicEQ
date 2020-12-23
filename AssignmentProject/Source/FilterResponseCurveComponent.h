@@ -19,7 +19,8 @@ public:
     ~FilterResponseCurveComponent() = default;
     void paint(Graphics& g);
     void resized();
-    void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags);
+    void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags, bool state);
 private:
     Path responseCurve;
+    bool filterState = false;
 };

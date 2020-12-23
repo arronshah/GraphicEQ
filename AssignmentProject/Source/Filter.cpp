@@ -20,7 +20,7 @@ Filter::Filter(enum filterType type, ValueTree& tree)
     node.setProperty("filterType", filterType, nullptr);
     node.setProperty("frequency", 440.f, nullptr);
     node.setProperty("resonance", 0.7, nullptr);
-    node.setProperty("gain", 0.f, nullptr);
+    node.setProperty("gain", 1.f, nullptr);
     parameterValueTree.addChild(node, filterType, nullptr);
     
     frequencies.resize (300);
@@ -64,21 +64,32 @@ void Filter::updateParameters()
     ValueTree tree = parameterValueTree.getChild(filterType);
     float frequency = tree.getProperty("frequency");
     float resonance = tree.getProperty("resonance");
+    float gain = tree.getProperty("gain");
     
     if(frequency != prevFrequency)
     {
         smoothedFrequency.setTargetValue(frequency);
         prevFrequency = frequency;
     }
+    if(resonance != prevResonance)
+    {
+        smoothedResonance.setTargetValue(resonance);
+        prevFrequency = frequency;
+    }
+    if(gain != prevGain)
+    {
+        smoothedGain.setTargetValue(gain);
+        prevFrequency = frequency;
+    }
     
     if(filterType == 0){
-        *filter.state = *dsp::IIR::Coefficients<float>::makeLowPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
+        *filter.state = *dsp::IIR::Coefficients<float>::makeLowShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
     }
     else if(filterType == 1){
-        *filter.state = *dsp::IIR::Coefficients<float>::makeBandPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
+        *filter.state = *dsp::IIR::Coefficients<float>::makePeakFilter(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
     }
     else{
-        *filter.state = *dsp::IIR::Coefficients<float>::makeHighPass(lastSampleRate, smoothedFrequency.getNextValue(), resonance);
+        *filter.state = *dsp::IIR::Coefficients<float>::makeHighShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
     }
     
     filter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
@@ -92,4 +103,14 @@ std::vector<double>* Filter::getFrequencies()
 std::vector<double>& Filter::getMagnitudes()
 {
     return magnitudes;
+}
+
+bool Filter::getCurrentState()
+{
+    return currentState;
+}
+
+void Filter::setState(bool newState)
+{
+    currentState = newState;
 }

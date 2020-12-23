@@ -17,17 +17,27 @@ FilterResponseCurveComponent::FilterResponseCurveComponent()
 
 void FilterResponseCurveComponent::paint(Graphics& g)
 {
-    g.setColour(Colours::grey);
-    g.setOpacity(1.f);
-    g.strokePath(responseCurve, PathStrokeType(3.f));
-    
     Point<float> start(0.f, (float) getHeight() - 20);
     Point<float> end((float) getWidth(), (float) getHeight() - 20);
-    ColourGradient gradient(Colours::grey, start, Colours::paleturquoise, end, true);
-    FillType fill(gradient);
-    fill.setOpacity(0.2);
-    g.setFillType(fill);
-    g.fillPath(responseCurve);
+    
+    if(filterState)
+    {
+        g.setColour(Colours::grey);
+        g.setOpacity(1.f);
+        g.strokePath(responseCurve, PathStrokeType(3.f));
+        
+        ColourGradient gradient(Colours::grey, start, Colours::paleturquoise, end, true);
+        FillType fill(gradient);
+        fill.setOpacity(0.2);
+        g.setFillType(fill);
+        g.fillPath(responseCurve);
+    }
+    else
+    {
+        g.setColour(Colours::grey);
+        g.setOpacity(0.3);
+        g.strokePath(responseCurve, PathStrokeType(3.f));
+    }
 }
 
 void FilterResponseCurveComponent::resized()
@@ -35,9 +45,10 @@ void FilterResponseCurveComponent::resized()
     
 }
 
-void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags)
+void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags, bool state)
 {
     responseCurve.clear();
+    filterState = state;
     
     float height = getHeight() - 20;
     float width = getWidth();

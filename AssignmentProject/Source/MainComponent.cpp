@@ -4,7 +4,7 @@
 MainComponent::MainComponent(Audio& a) : audio(a)
 {
     setSize (900, 750);
-    //setLookAndFeel(&lookAndFeel);
+    setLookAndFeel(&newLookAndFeel);
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
     
@@ -54,8 +54,8 @@ void MainComponent::resized()
         filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
     }
     
-    auto filterControlArea = localBoundsWithMargin.removeFromTop(170);
-    auto bandControlWidth = filterControlArea.getWidth() / 5;
+    auto filterControlArea = localBoundsWithMargin.removeFromTop(220);
+    auto bandControlWidth = filterControlArea.getWidth() / 6;
     
     for(auto& filter : filterComponent)
     {

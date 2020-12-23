@@ -6,6 +6,7 @@
 #include "AnalyserComponent.h"
 #include "FilterComponent.h"
 #include "FilterResponseCurveComponent.h"
+#include "LookAndFeel.h"
 
 //==============================================================================
 /*
@@ -33,6 +34,8 @@ private:
     
     std::array<FilterComponent, 3> filterComponent;
     std::array<FilterResponseCurveComponent, 3> filterResponseCurveComponent;
+    
+    UILookAndFeel newLookAndFeel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

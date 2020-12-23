@@ -17,24 +17,26 @@
 #include "Filter.h"
 
 class FilterComponent : public Component,
-                        public Slider::Listener
+                        public Slider::Listener,
+                        public Button::Listener
 {
 public:
     FilterComponent();
     ~FilterComponent();
-    void paint (juce::Graphics&) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
     void createValueTreeAttachments(int index);
     void setFilter(Filter* filterRef, int index);
     void sliderValueChanged(Slider* slider) override;
     void setFilterResponseComponent(FilterResponseCurveComponent* frcc, int index);
+    void buttonClicked(Button* button) override;
     
 private:
     Slider frequencySlider;
     Slider gainSlider;
     Slider resonanceSlider;
     ComboBox filterType;
-    ToggleButton filterOn;
+    TextButton filterOn;
     
     ValueTreeSliderAttachment* frequencySliderAttachment;
     ValueTreeSliderAttachment* resonanceSliderAttachment;
