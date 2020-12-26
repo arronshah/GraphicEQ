@@ -7,6 +7,7 @@
 #include "FilterComponent.h"
 #include "FilterResponseCurveComponent.h"
 #include "LookAndFeel.h"
+#include "LevelMeterComponent.h"
 
 //==============================================================================
 /*
@@ -31,6 +32,8 @@ private:
     AudioFilePlayerComponent audioFilePlayerComponent;
     Audio& audio;
     AnalyserComponent analyserComponent;
+    
+    LevelMeterComponent levelMeter;
     
     std::array<FilterComponent, 3> filterComponent;
     std::array<FilterResponseCurveComponent, 3> filterResponseCurveComponent;

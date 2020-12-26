@@ -10,6 +10,11 @@
 
 #include "FilterComponent.h"
 
+#define BEGIN_WITH(x) { \
+    auto &_ = x;
+
+#define END_WITH() }
+
 FilterComponent::FilterComponent()
 {
     addAndMakeVisible(filterOn);
@@ -19,11 +24,14 @@ FilterComponent::FilterComponent()
     filterOn.addListener(this);
     
     addAndMakeVisible(frequencySlider);
-    frequencySlider.setSliderStyle(Slider::RotaryVerticalDrag);
-    frequencySlider.setRange(20, 20000, 1);
-    frequencySlider.setSkewFactorFromMidPoint(500);
-    frequencySlider.setTextValueSuffix(" Hz");
-    frequencySlider.setMouseDragSensitivity(80);
+    
+    BEGIN_WITH(frequencySlider)
+    _.setSliderStyle(Slider::RotaryVerticalDrag);
+    _.setRange(20, 20000, 1);
+    _.setSkewFactorFromMidPoint(500);
+    _.setTextValueSuffix(" Hz");
+    _.setMouseDragSensitivity(80);
+    END_WITH()
 
     addAndMakeVisible(resonanceSlider);
     resonanceSlider.setRange(0.1, 18, 0.01);
@@ -53,10 +61,7 @@ FilterComponent::~FilterComponent()
 void FilterComponent::sliderValueChanged(Slider* slider)
 {
     if (filterResponseComponent != nullptr)
-    {
         filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), filter->getCurrentState());
-    }
-
 }
 
 void FilterComponent::createValueTreeAttachments(int index)
@@ -83,10 +88,10 @@ void FilterComponent::resized()
     auto reducedButtonArea = filterOnButtonArea.reduced(UIElementProperties::buttonPadding);
     filterOn.setBounds(reducedButtonArea.removeFromRight(reducedButtonArea.getWidth() / 4));
     
-    auto rowSize = bounds.getHeight() / 3;
-    frequencySlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
-    resonanceSlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
-    gainSlider.setBounds(bounds.removeFromTop(rowSize).reduced(UIElementProperties::buttonPadding));
+    auto row = bounds.getHeight() / 3;
+    frequencySlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
+    resonanceSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
+    gainSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
     
     if (filterResponseComponent != nullptr)
         filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), filter->getCurrentState());
@@ -119,6 +124,5 @@ void FilterComponent::buttonClicked(Button* button)
         
         filter->setState(button->getToggleState());
         filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), button->getToggleState());
-    }
-        
+    } 
 }

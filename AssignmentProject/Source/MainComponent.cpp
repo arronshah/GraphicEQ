@@ -20,6 +20,12 @@ MainComponent::MainComponent(Audio& a) : audio(a)
         addAndMakeVisible(filterResponseCurveComponent[i]);
         filterComponent[i].setFilterResponseComponent(&filterResponseCurveComponent[i], i);
     }
+    
+//    levelMeter.setSliderStyle(Slider::LinearVertical);
+//    levelMeter.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+    addAndMakeVisible(levelMeter);
+    levelMeter.setAnalyser(audio.getAnalyser());
+    levelMeter.startTimer(30);
 }
 
 MainComponent::~MainComponent()
@@ -34,7 +40,6 @@ void MainComponent::paint (juce::Graphics& g)
 
     g.setFont (juce::Font (16.0f));
     g.setColour (juce::Colours::white);
-    //g.drawText ("Hello World!", getLocalBounds(), juce::Justification::centred, true);
 }
 
 void MainComponent::resized()
@@ -48,18 +53,19 @@ void MainComponent::resized()
     audioFilePlayerComponent.setBounds(filePlayerArea);
     
     auto analyserArea = localBoundsWithMargin.removeFromTop(400);
-    analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    auto levelMeterArea = analyserArea.removeFromRight(35);
     
-    for (int i = 0; i < 3; i++) {
+    analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    levelMeter.setBounds(levelMeterArea.reduced(UIElementProperties::buttonPadding));
+    
+    for (int i = 0; i < 3; i++)
         filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
-    }
     
     auto filterControlArea = localBoundsWithMargin.removeFromTop(220);
     auto bandControlWidth = filterControlArea.getWidth() / 6;
     
     for(auto& filter : filterComponent)
-    {
         filter.setBounds(filterControlArea.removeFromLeft(bandControlWidth));
-    }
+    
     
 }

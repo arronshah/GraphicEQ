@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "Analyser.h"
 #include "Filter.h"
+#include "LevelMeterComponent.h"
 
 enum TransportState
 {
@@ -49,6 +50,7 @@ public:
     void setAnalyser(Analyser* analyserRef);
     void setFilter(Filter* filterRef, int index);
     
+    
 private:
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;    //reads audio from the file
     AudioTransportSource audioTransportSource;            // this controls the playback of a positionable audio stream, handling the starting/stopping and sample-rate conversion
@@ -56,6 +58,8 @@ private:
     TransportState audioTransportState;
     Analyser* analyser {nullptr};
     Filter* filter[3] = {nullptr, nullptr, nullptr};
+    
+    
     
     
 };

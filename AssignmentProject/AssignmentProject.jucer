@@ -17,6 +17,10 @@
         <FILE id="lYJNeu" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
       </GROUP>
       <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="EjgPZt" name="LevelMeterComponent.cpp" compile="1" resource="0"
+              file="Source/LevelMeterComponent.cpp"/>
+        <FILE id="Dlmfkp" name="LevelMeterComponent.h" compile="0" resource="0"
+              file="Source/LevelMeterComponent.h"/>
         <FILE id="pQF49H" name="FilterResponseCurveComponent.cpp" compile="1"
               resource="0" file="Source/FilterResponseCurveComponent.cpp"/>
         <FILE id="eiVtx4" name="FilterResponseCurveComponent.h" compile="0"

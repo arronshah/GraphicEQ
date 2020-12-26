@@ -17,8 +17,8 @@ FilterResponseCurveComponent::FilterResponseCurveComponent()
 
 void FilterResponseCurveComponent::paint(Graphics& g)
 {
-    Point<float> start(0.f, (float) getHeight() - 20);
-    Point<float> end((float) getWidth(), (float) getHeight() - 20);
+    Point<float> start(0.f, (float) getHeight());
+    Point<float> end((float) getWidth(), (float) getHeight());
     
     if(filterState)
     {

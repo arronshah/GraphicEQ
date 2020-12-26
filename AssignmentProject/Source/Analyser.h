@@ -28,12 +28,14 @@ public:
     float* getFftData();
     bool nextFftBlockIsReady();
     void setNextFftBlockIsReady(bool flag);
+    float* getFifoCopy();
     
 private:
     dsp::FFT fft;
     dsp::WindowingFunction<float> window;
     //FixedQueue<float, fftSize> fifo;
     float fifo[fftSize];
+    float fifoCopy[fftSize];
     float fftData[fftSize * 2];
     int fifoIndex = 0;
     bool nextFftBlockReady = false;

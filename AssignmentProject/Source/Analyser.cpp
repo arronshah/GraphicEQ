@@ -26,7 +26,9 @@ void Analyser::pushSampleToQueue(float sample)
         if (! nextFftBlockReady)            // [12]
         {
             juce::zeromem (fftData, sizeof (fftData));
+            juce::zeromem (fifoCopy, sizeof (fifoCopy));
             memcpy (fftData, fifo, sizeof (fifo));
+            memcpy (fifoCopy, fifo, sizeof (fifo));
             nextFftBlockReady = true;
         }
         
@@ -55,4 +57,9 @@ bool Analyser::nextFftBlockIsReady()
 void Analyser::setNextFftBlockIsReady(bool flag)
 {
     nextFftBlockReady = flag;
+}
+
+float* Analyser::getFifoCopy()
+{
+    return fifoCopy;
 }
