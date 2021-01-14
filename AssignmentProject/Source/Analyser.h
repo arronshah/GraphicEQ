@@ -16,7 +16,7 @@ enum
 {
     fftOrder  = 11,             // [1]
     fftSize   = 1 << fftOrder,  // [2]
-    windowSize = 256             // [3]
+    windowSize = 128             // [3]
 };
 
 class Analyser
@@ -28,17 +28,30 @@ public:
     float* getFftData();
     bool nextFftBlockIsReady();
     void setNextFftBlockIsReady(bool flag);
-    float* getFifoCopy();
+    float getPeakValue();
     
 private:
     dsp::FFT fft;
     dsp::WindowingFunction<float> window;
     //FixedQueue<float, fftSize> fifo;
     float fifo[fftSize];
-    float fifoCopy[fftSize];
+    
+    //std::atomic<std::array<float, fftSize>> fifo;
+    
     float fftData[fftSize * 2];
     int fifoIndex = 0;
-    bool nextFftBlockReady = false;
+    std::atomic<bool> nextFftBlockReady;
+    
+    float aval = 0;
+    float measuredItems = 0;
+    int measuredLength = 44;
+    const float fLog40 = log10(40);
+    float oldPeakValue = 0;
+    float peakValue = 0;
+    float newPeakValue = 0;
+    float level = 0;
+    
+    std::mutex m;
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Analyser)

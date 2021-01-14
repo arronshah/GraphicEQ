@@ -51,34 +51,10 @@ void LevelMeterComponent::timerCallback()
     {
         if (analyser->nextFftBlockIsReady())
         {
-            fifoCopy = analyser->getFifoCopy();
-            process();
+            peakLevel = analyser->getPeakValue();
         }
         
         repaint();
-    }
-}
-
-void LevelMeterComponent::process()
-{
-    for(int i = 0; i < fftSize; i++)
-    {
-        aval = fabs(fifoCopy[i]); //peak level detector
-        
-        if (aval > max)
-            max = aval;
-        
-        measuredItems++;
-        
-        if (measuredItems == measuredLength)
-        {
-            newMax = log10(max * 39 + 1) / fLog40;
-            max = measuredItems = 0;
-        }
-        
-        float coeff = (newMax > oldMax) ? 0.1 : 0.0001;
-        peakLevel = coeff * newMax + (1 - coeff) * oldMax;
-        oldMax = peakLevel;
     }
 }
 

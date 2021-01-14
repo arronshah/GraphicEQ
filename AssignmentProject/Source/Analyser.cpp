@@ -12,7 +12,8 @@
 
 Analyser::Analyser() :
         fft(fftOrder),
-        window(fftSize, dsp::WindowingFunction<float>::blackman)
+        window(fftSize, dsp::WindowingFunction<float>::blackman),
+        nextFftBlockReady(false)
 {
     
 }
@@ -21,14 +22,15 @@ void Analyser::pushSampleToQueue(float sample)
 {
     // if the fifo contains enough data, set a flag to say
     // that the next frame should now be rendered..
+    
+    m.lock();
+    
     if (fifoIndex == fftSize)               // [11]
     {
         if (! nextFftBlockReady)            // [12]
         {
             juce::zeromem (fftData, sizeof (fftData));
-            juce::zeromem (fifoCopy, sizeof (fifoCopy));
             memcpy (fftData, fifo, sizeof (fifo));
-            memcpy (fifoCopy, fifo, sizeof (fifo));
             nextFftBlockReady = true;
         }
         
@@ -36,6 +38,8 @@ void Analyser::pushSampleToQueue(float sample)
     }
     
     fifo[fifoIndex++] = sample;             // [12]
+    
+    m.unlock();
 }
 
 float* Analyser::getFftData()
@@ -59,7 +63,30 @@ void Analyser::setNextFftBlockIsReady(bool flag)
     nextFftBlockReady = flag;
 }
 
-float* Analyser::getFifoCopy()
+float Analyser::getPeakValue()
 {
-    return fifoCopy;
+    
+    for(int i = 0; i < fftSize; i++)
+    {
+        m.lock();
+        aval = fabs(fifo[i]); //peak level detector
+        m.unlock();
+        
+        if (aval > peakValue)
+            peakValue = aval;
+        
+        measuredItems++;
+        
+        if (measuredItems == measuredLength)
+        {
+            newPeakValue = log10(peakValue * 39 + 1) / fLog40;
+            peakValue = measuredItems = 0;
+        }
+        
+        float coeff = (newPeakValue > oldPeakValue) ? 0.1 : 0.0001;
+        level = coeff * newPeakValue + (1 - coeff) * oldPeakValue;
+        oldPeakValue = level;
+    }
+    
+    return level;
 }
