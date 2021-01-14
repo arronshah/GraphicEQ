@@ -69,9 +69,7 @@ void AnalyserComponent::drawGrid(Graphics& g)
         
         g.drawText(frequencyAsString, linePosition, height, 40, 20, Justification::left);
     }
-    
-    
-    
+
 }
 
 float AnalyserComponent::frequencyToProportion (float freq)
@@ -92,24 +90,30 @@ void AnalyserComponent::paintOverChildren(Graphics& g)
 
 void AnalyserComponent::drawPath(Graphics& g)
 {
-    
     path.clear();
     g.setColour (juce::Colours::paleturquoise);
     
     auto width  = getLocalBounds().getWidth();
     auto height = getLocalBounds().getHeight() - 20;
     
+    
     path.startNewSubPath(0.f, height);
-
-    for (int i = 1; i < windowSize; i++)
+    
+    for (int i = 1; i < windowSize; i+=2)
     {
-        float pointX = (float) juce::jmap (i, 0, windowSize - 1, 0, width);
-        float pointY = juce::jmap (windowData[i], 0.0f, 1.0f, (float) height, 0.0f);
+        std::array<Point<float>, 3> points;
+        for(int x = 0; x < 3; x++)
+            points[x] = getPointFromIndex(i+x);
         
-        if(!isnan(pointY)){
-            path.lineTo( pointX, pointY);
+        float cX = 2 * points[1].getX() - 0.5 * (points[0].getX() + points[2].getX());
+        float cY = 2 * points[1].getY() - 0.5 * (points[0].getY() + points[2].getY());
+        Point<float> controlPoint(cX, cY);
+        
+        if(cY != NAN)
+        {
+            path.lineTo(points[0]);
+            path.quadraticTo(controlPoint, points[2]);
         }
-        
     }
 
     Point<float> end((float) width, (float) height);
@@ -125,12 +129,21 @@ void AnalyserComponent::drawPath(Graphics& g)
     g.fillPath(path);
 }
 
+Point<float> AnalyserComponent::getPointFromIndex(int index)
+{
+    float x = juce::jmap (index, 0, windowSize - 1, 0, getWidth());
+    float y = juce::jmap (windowData[index], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
+    
+    return Point<float>(x, y);
+}
+
 void AnalyserComponent::timerCallback()
 {
     if (analyser != nullptr)
     {
         if (analyser->nextFftBlockIsReady())
         {
+            peakLevel = analyser->getPeakValue();
             drawNextFrame();
             analyser->setNextFftBlockIsReady(false);
             repaint();
