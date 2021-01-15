@@ -18,10 +18,11 @@
 
 class FilterComponent : public Component,
                         public Slider::Listener,
-                        public Button::Listener
+                        public Button::Listener,
+                        public ValueTree::Listener
 {
 public:
-    FilterComponent();
+    FilterComponent(ValueTree& vt, enum filterType type);
     ~FilterComponent();
     void paint (juce::Graphics& g) override;
     void resized() override;
@@ -30,12 +31,12 @@ public:
     void sliderValueChanged(Slider* slider) override;
     void setFilterResponseComponent(FilterResponseCurveComponent* frcc, int index);
     void buttonClicked(Button* button) override;
+    void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override;
     
 private:
     Slider frequencySlider;
     Slider gainSlider;
     Slider resonanceSlider;
-    ComboBox filterType;
     TextButton filterOn;
     
     ValueTreeSliderAttachment* frequencySliderAttachment;
@@ -45,6 +46,9 @@ private:
     FilterResponseCurveComponent* filterResponseComponent {nullptr};
     Filter* filter {nullptr};
     
-    ValueTree* node;
+    ValueTree filterSubTree;
+    ValueTree& valueTree;
+    
+    float filterType = 0;;
     
 };

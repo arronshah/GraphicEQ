@@ -10,18 +10,15 @@
 
 #include "Filter.h"
 
-Filter::Filter(enum filterType type, ValueTree& tree)
+Filter::Filter(enum filterType type)
     : filterType(type),
-      parameterValueTree(tree)
+      currentState(false),
+      filterMagnitudesReady(false),
+      frequency(440.f),
+      resonance(0.7),
+      gain(1.0)
 {
-    String filterParams;
-    filterParams << "filterParams" << filterType;
-    ValueTree node(filterParams);
-    node.setProperty("filterType", filterType, nullptr);
-    node.setProperty("frequency", 440.f, nullptr);
-    node.setProperty("resonance", 0.7, nullptr);
-    node.setProperty("gain", 1.f, nullptr);
-    parameterValueTree.addChild(node, filterType, nullptr);
+    
     
     frequencies.resize (300);
     for (size_t i=0; i < frequencies.size(); ++i) {
@@ -30,12 +27,7 @@ Filter::Filter(enum filterType type, ValueTree& tree)
     magnitudes.resize (frequencies.size());
     
     smoothedFrequency.reset(lastSampleRate, 0.0001);
-    smoothedFrequency.setCurrentAndTargetValue(parameterValueTree.getProperty("frequency"));
-}
-
-ValueTree* Filter::getParameterValueTree()
-{
-    return &parameterValueTree;
+    smoothedFrequency.setCurrentAndTargetValue(frequency.load());
 }
 
 void Filter::process(dsp::AudioBlock<float> audioBlock)
@@ -56,30 +48,40 @@ void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
     filter.prepare(processSpec);
     filter.reset();
     updateParameters();
-    
+}
+
+void Filter::setFrequency(float newFrequency)
+{
+    frequency = newFrequency;
+}
+
+void Filter::setResonance(float newResonance)
+{
+    resonance = newResonance;
+}
+
+void Filter::setGain(float newGain)
+{
+    gain = newGain;
 }
 
 void Filter::updateParameters()
 {
-    ValueTree tree = parameterValueTree.getChild(filterType);
-    float frequency = tree.getProperty("frequency");
-    float resonance = tree.getProperty("resonance");
-    float gain = tree.getProperty("gain");
     
-    if(frequency != prevFrequency)
+    if(frequency.load() != prevFrequency)
     {
-        smoothedFrequency.setTargetValue(frequency);
-        prevFrequency = frequency;
+        smoothedFrequency.setTargetValue(frequency.load());
+        prevFrequency = frequency.load();
     }
-    if(resonance != prevResonance)
+    if(resonance.load() != prevResonance)
     {
-        smoothedResonance.setTargetValue(resonance);
-        prevFrequency = frequency;
+        smoothedResonance.setTargetValue(resonance.load());
+        prevResonance = resonance.load();
     }
-    if(gain != prevGain)
+    if(gain.load() != prevGain)
     {
-        smoothedGain.setTargetValue(gain);
-        prevFrequency = frequency;
+        smoothedGain.setTargetValue(gain.load());
+        prevGain = gain.load();
     }
     
     if(filterType == 0){
@@ -92,8 +94,22 @@ void Filter::updateParameters()
         *filter.state = *dsp::IIR::Coefficients<float>::makeHighShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
     }
     
-    filter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
+    if(!filterMagnitudesReady.load())
+    {
+        filter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
+        filterMagnitudesReady = true;
+    }
     
+}
+
+void Filter::setFilterMagnitudesReady(bool flag)
+{
+    filterMagnitudesReady = flag;
+}
+
+bool Filter::getFilterMagnitudesReady()
+{
+    return filterMagnitudesReady.load();
 }
 
 std::vector<double>* Filter::getFrequencies()
@@ -107,7 +123,7 @@ std::vector<double>& Filter::getMagnitudes()
 
 bool Filter::getCurrentState()
 {
-    return currentState;
+    return currentState.load();
 }
 
 void Filter::setState(bool newState)

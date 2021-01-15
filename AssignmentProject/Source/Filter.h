@@ -21,9 +21,8 @@ enum filterType
 class Filter
 {
 public:
-    Filter(filterType type, ValueTree& tree);
+    Filter(filterType type);
     ~Filter() = default;
-    ValueTree* getParameterValueTree();
     void process(dsp::AudioBlock<float> buffer);
     void prepare(int samplesPerBlockExpected, double sampleRate);
     void updateParameters();
@@ -31,17 +30,27 @@ public:
     bool getCurrentState();
     std::vector<double>* getFrequencies();
     std::vector<double>& getMagnitudes();
+    void setFilterMagnitudesReady(bool flag);
+    bool getFilterMagnitudesReady();
+    void setFrequency(float newFrequency);
+    void setResonance(float newResonance);
+    void setGain(float newGain);
     
 private:
     const int filterType;
-    ValueTree& parameterValueTree;
+    //ValueTree& parameterValueTree = {nullptr};
     dsp::ProcessorDuplicator <dsp::IIR::Filter<float>, dsp::IIR::Coefficients <float>> filter;
     float lastSampleRate = 44100;
     
     std::vector<double> frequencies;
     std::vector<double> magnitudes;
     
-    bool currentState = false;
+    std::atomic<bool> currentState;
+    std::atomic<bool> filterMagnitudesReady;
+    
+    std::atomic<float> frequency;
+    std::atomic<float> resonance;
+    std::atomic<float> gain;
     
     float prevFrequency = 0;
     float prevResonance = 0;

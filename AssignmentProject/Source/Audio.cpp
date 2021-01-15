@@ -11,7 +11,6 @@
 #include "Audio.h"
 
 Audio::Audio()
-    : parameterValueTree("parameterValueTree")
       //debugListener(parameterValueTree, true)
 {
     //set the filePlayer as the audio source
@@ -81,11 +80,6 @@ AudioFilePlayer* Audio::getAudioFilePlayer()
 Analyser* Audio::getAnalyser()
 {
     return &analyser;
-}
- 
-ValueTree* Audio::getFilterValueTree(int index)
-{
-    return filter[index].getParameterValueTree();
 }
 
 Filter* Audio::getFilter(int index)

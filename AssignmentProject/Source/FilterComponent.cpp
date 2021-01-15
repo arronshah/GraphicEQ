@@ -15,8 +15,21 @@
 
 #define END_WITH() }
 
-FilterComponent::FilterComponent()
+FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
+    valueTree(vt),
+    filterType(type)
 {
+    String filterParams;
+    filterParams << "filterParams" << type;
+    ValueTree node(filterParams);
+    node.setProperty("filterType", type, nullptr);
+    node.setProperty("frequency", 440.f, nullptr);
+    node.setProperty("resonance", 0.7, nullptr);
+    node.setProperty("gain", 1.f, nullptr);
+    valueTree.addChild(node, type, nullptr);
+    valueTree.addListener(this);
+    DBG(valueTree.toXmlString());
+    
     addAndMakeVisible(filterOn);
     filterOn.setName("filterOn");
     filterOn.setButtonText("Off");
@@ -55,22 +68,53 @@ FilterComponent::~FilterComponent()
     delete frequencySliderAttachment;
     delete resonanceSliderAttachment;
     delete gainSliderAttachment;
-    delete node;
+    //delete node;
 }
 
 void FilterComponent::sliderValueChanged(Slider* slider)
 {
     if (filterResponseComponent != nullptr)
-        filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), filter->getCurrentState());
+    {
+        if(filter->getFilterMagnitudesReady())
+        {
+            filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), filter->getCurrentState());
+            filter->setFilterMagnitudesReady(false);
+        }
+    }
+        
+    
+}
+
+void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
+                               const Identifier& property)
+{
+    int fType = treeWhosePropertyHasChanged.getProperty("filterType");
+    if(fType == filterType)
+    {
+        float x = treeWhosePropertyHasChanged.getProperty(property);
+        String propertyName = property.toString();
+        
+        if(propertyName == "frequency")
+        {
+            filter->setFrequency(x);
+        }
+        else if(propertyName == "resonance")
+        {
+            filter->setResonance(x);
+        }
+        else if(propertyName == "gain")
+        {
+            filter->setGain(x);
+        }
+    }
 }
 
 void FilterComponent::createValueTreeAttachments(int index)
 {
-    ValueTree* tree = filter->getParameterValueTree();
-    node = new ValueTree(tree->getChildWithProperty("filterType", index));
-    frequencySliderAttachment = new ValueTreeSliderAttachment(*node, &frequencySlider, "frequency");
-    resonanceSliderAttachment = new ValueTreeSliderAttachment(*node, &resonanceSlider, "resonance");
-    gainSliderAttachment = new ValueTreeSliderAttachment(*node, &gainSlider, "gain");
+    filterSubTree = valueTree.getChildWithProperty("filterType", index);
+    frequencySliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &frequencySlider, "frequency");
+    resonanceSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &resonanceSlider, "resonance");
+    gainSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &gainSlider, "gain");
 }
 
 void FilterComponent::paint (juce::Graphics& g)
@@ -123,6 +167,6 @@ void FilterComponent::buttonClicked(Button* button)
         }
         
         filter->setState(button->getToggleState());
-        filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), button->getToggleState());
+        //filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), button->getToggleState());
     } 
 }

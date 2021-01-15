@@ -61,7 +61,9 @@ void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* freque
     for (size_t i=1; i < frequencies->size(); ++i)
     {
         float x = float (getX() + i * xFactor);
+        
         float yCalc = float (mags [i] > 0 ? (height / 2.f) - pixelsPerDouble * std::log (mags [i]) / std::log (2) : height);
+        
         float y = (yCalc > height) ? height : yCalc;
         responseCurve.lineTo (x, y);
     }

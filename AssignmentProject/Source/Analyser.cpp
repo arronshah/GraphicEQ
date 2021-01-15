@@ -22,9 +22,6 @@ void Analyser::pushSampleToQueue(float sample)
 {
     // if the fifo contains enough data, set a flag to say
     // that the next frame should now be rendered..
-    
-    m.lock();
-    
     if (fifoIndex == fftSize)               // [11]
     {
         if (! nextFftBlockReady)            // [12]
@@ -38,8 +35,6 @@ void Analyser::pushSampleToQueue(float sample)
     }
     
     fifo[fifoIndex++] = sample;             // [12]
-    
-    m.unlock();
 }
 
 float* Analyser::getFftData()
@@ -68,9 +63,7 @@ float Analyser::getPeakValue()
     
     for(int i = 0; i < fftSize; i++)
     {
-        m.lock();
         aval = fabs(fifo[i]); //peak level detector
-        m.unlock();
         
         if (aval > peakValue)
             peakValue = aval;

@@ -52,6 +52,7 @@ void LevelMeterComponent::timerCallback()
         if (analyser->nextFftBlockIsReady())
         {
             peakLevel = analyser->getPeakValue();
+            analyser->setNextFftBlockIsReady(false);
         }
         
         repaint();

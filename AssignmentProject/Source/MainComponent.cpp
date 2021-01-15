@@ -1,7 +1,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent(Audio& a) : audio(a)
+MainComponent::MainComponent(Audio& a) : audio(a), valueTree("PARAMETERS")
 {
     setSize (900, 750);
     setLookAndFeel(&newLookAndFeel);
@@ -26,6 +26,8 @@ MainComponent::MainComponent(Audio& a) : audio(a)
     addAndMakeVisible(levelMeter);
     levelMeter.setAnalyser(audio.getAnalyser());
     levelMeter.startTimer(30);
+    
+    //startTimer(2000);
 }
 
 MainComponent::~MainComponent()

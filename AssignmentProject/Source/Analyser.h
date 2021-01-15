@@ -51,9 +51,6 @@ private:
     float newPeakValue = 0;
     float level = 0;
     
-    std::mutex m;
-    
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Analyser)
     
 };

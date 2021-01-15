@@ -109,7 +109,7 @@ void AnalyserComponent::drawPath(Graphics& g)
         float cY = 2 * points[1].getY() - 0.5 * (points[0].getY() + points[2].getY());
         Point<float> controlPoint(cX, cY);
         
-        if(cY != NAN)
+        if(!isnan(cY))
         {
             path.lineTo(points[0]);
             path.quadraticTo(controlPoint, points[2]);
@@ -143,7 +143,6 @@ void AnalyserComponent::timerCallback()
     {
         if (analyser->nextFftBlockIsReady())
         {
-            peakLevel = analyser->getPeakValue();
             drawNextFrame();
             analyser->setNextFftBlockIsReady(false);
             repaint();
