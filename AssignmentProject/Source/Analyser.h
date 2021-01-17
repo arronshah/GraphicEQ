@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Buffer.h"
 
 enum
 {
@@ -33,14 +34,16 @@ public:
 private:
     dsp::FFT fft;
     dsp::WindowingFunction<float> window;
-    //FixedQueue<float, fftSize> fifo;
     float fifo[fftSize];
-    
-    //std::atomic<std::array<float, fftSize>> fifo;
-    
     float fftData[fftSize * 2];
     int fifoIndex = 0;
     std::atomic<bool> nextFftBlockReady;
+    
+    Buffer buffer1;
+    Buffer buffer2;
+    
+    std::atomic<Buffer*> writeBuffer;
+    std::atomic<Buffer*> readBuffer;
     
     float aval = 0;
     float measuredItems = 0;

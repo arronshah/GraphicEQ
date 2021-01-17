@@ -13,6 +13,8 @@
               file="Source/AudioFilePlayer.cpp"/>
         <FILE id="yMwJ17" name="AudioFilePlayer.h" compile="0" resource="0"
               file="Source/AudioFilePlayer.h"/>
+        <FILE id="QXYFSt" name="Buffer.cpp" compile="1" resource="0" file="Source/Buffer.cpp"/>
+        <FILE id="acAa56" name="Buffer.h" compile="0" resource="0" file="Source/Buffer.h"/>
         <FILE id="rB4uT3" name="Filter.cpp" compile="1" resource="0" file="Source/Filter.cpp"/>
         <FILE id="lYJNeu" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
       </GROUP>

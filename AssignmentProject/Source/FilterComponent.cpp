@@ -167,6 +167,8 @@ void FilterComponent::buttonClicked(Button* button)
         }
         
         filter->setState(button->getToggleState());
-        //filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), button->getToggleState());
+        
+        if(filter->getFilterMagnitudesReady())
+            filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), button->getToggleState());
     } 
 }
