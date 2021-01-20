@@ -36,7 +36,6 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setFont (juce::Font (16.0f));
@@ -45,9 +44,6 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    // This is called when the MainComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
     int margin = 10;
     auto localBoundsWithMargin = getLocalBounds().reduced(margin);
     auto filePlayerArea = localBoundsWithMargin.removeFromTop(130);
@@ -62,8 +58,8 @@ void MainComponent::resized()
     for (int i = 0; i < 3; i++)
         filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
     
-    auto filterControlArea = localBoundsWithMargin.removeFromTop(220);
-    auto bandControlWidth = filterControlArea.getWidth() / 6;
+    auto filterControlArea = localBoundsWithMargin.removeFromTop(220).removeFromRight(675);
+    auto bandControlWidth = localBoundsWithMargin.getWidth() / 6;
     
     for(auto& filter : filterComponent)
         filter.setBounds(filterControlArea.removeFromLeft(bandControlWidth));
