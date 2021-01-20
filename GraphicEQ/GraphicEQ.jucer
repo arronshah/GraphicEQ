@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="qvzQWR" name="GraphicEQ" projectType="guiapp" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
+              cppLanguageStandard="latest">
+  <MAINGROUP id="R92xs7" name="GraphicEQ">
+    <GROUP id="{27C385CB-D8D7-3691-8328-2B24976DE379}" name="Source">
+      <GROUP id="{7440F3A3-673E-ECD2-45F9-5BD60CFBB325}" name="Audio">
+        <FILE id="E9cguJ" name="Analyser.cpp" compile="1" resource="0" file="Source/Analyser.cpp"/>
+        <FILE id="cKLzyG" name="Analyser.h" compile="0" resource="0" file="Source/Analyser.h"/>
+        <FILE id="m2XCT1" name="Audio.cpp" compile="1" resource="0" file="Source/Audio.cpp"/>
+        <FILE id="CjH7Y9" name="Audio.h" compile="0" resource="0" file="Source/Audio.h"/>
+        <FILE id="Uj3SqD" name="AudioFilePlayer.cpp" compile="1" resource="0"
+              file="Source/AudioFilePlayer.cpp"/>
+        <FILE id="yMwJ17" name="AudioFilePlayer.h" compile="0" resource="0"
+              file="Source/AudioFilePlayer.h"/>
+        <FILE id="QXYFSt" name="Buffer.cpp" compile="1" resource="0" file="Source/Buffer.cpp"/>
+        <FILE id="acAa56" name="Buffer.h" compile="0" resource="0" file="Source/Buffer.h"/>
+        <FILE id="rB4uT3" name="Filter.cpp" compile="1" resource="0" file="Source/Filter.cpp"/>
+        <FILE id="lYJNeu" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
+      </GROUP>
+      <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="AD5JC5" name="OpenGLComponent.cpp" compile="1" resource="0"
+              file="Source/OpenGLComponent.cpp"/>
+        <FILE id="xXPw3f" name="OpenGLComponent.h" compile="0" resource="0"
+              file="Source/OpenGLComponent.h"/>
+        <FILE id="EjgPZt" name="LevelMeterComponent.cpp" compile="1" resource="0"
+              file="Source/LevelMeterComponent.cpp"/>
+        <FILE id="Dlmfkp" name="LevelMeterComponent.h" compile="0" resource="0"
+              file="Source/LevelMeterComponent.h"/>
+        <FILE id="pQF49H" name="FilterResponseCurveComponent.cpp" compile="1"
+              resource="0" file="Source/FilterResponseCurveComponent.cpp"/>
+        <FILE id="eiVtx4" name="FilterResponseCurveComponent.h" compile="0"
+              resource="0" file="Source/FilterResponseCurveComponent.h"/>
+        <FILE id="i66aaH" name="FilterComponent.cpp" compile="1" resource="0"
+              file="Source/FilterComponent.cpp"/>
+        <FILE id="bFEI8D" name="FilterComponent.h" compile="0" resource="0"
+              file="Source/FilterComponent.h"/>
+        <FILE id="gI30SH" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
+        <FILE id="ZHJqrc" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
+        <FILE id="FUlmb7" name="AnalyserComponent.cpp" compile="1" resource="0"
+              file="Source/AnalyserComponent.cpp"/>
+        <FILE id="rW1p7X" name="AnalyserComponent.h" compile="0" resource="0"
+              file="Source/AnalyserComponent.h"/>
+        <FILE id="seg6Ds" name="AudioThumbnailComponent.cpp" compile="1" resource="0"
+              file="Source/AudioThumbnailComponent.cpp"/>
+        <FILE id="YEka1f" name="AudioThumbnailComponent.h" compile="0" resource="0"
+              file="Source/AudioThumbnailComponent.h"/>
+        <FILE id="vve2Rb" name="UIElementProperties.h" compile="0" resource="0"
+              file="Source/UIElementProperties.h"/>
+        <FILE id="crXBLX" name="AudioFilePlayerComponent.cpp" compile="1" resource="1"
+              file="Source/AudioFilePlayerComponent.cpp"/>
+        <FILE id="gqS0s7" name="AudioFilePlayerComponent.hpp" compile="0" resource="0"
+              file="Source/AudioFilePlayerComponent.hpp"/>
+        <FILE id="Y6zKji" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+        <FILE id="Q5nLTX" name="MainComponent.cpp" compile="1" resource="0"
+              file="Source/MainComponent.cpp"/>
+      </GROUP>
+      <FILE id="b1Dt8F" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="AssignmentProject"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="AssignmentProject"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
+        <MODULEPATH id="ff_gui_attachments" path="extra_modules/ff_gui_attachments"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="ff_gui_attachments" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <OSX/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
