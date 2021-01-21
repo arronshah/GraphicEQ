@@ -31,6 +31,7 @@ MainComponent::MainComponent(Audio& a) : audio(a), valueTree("PARAMETERS")
 
 MainComponent::~MainComponent()
 {
+    setLookAndFeel(nullptr);
 }
 
 //==============================================================================
