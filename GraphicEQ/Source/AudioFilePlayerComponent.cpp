@@ -57,26 +57,23 @@ void AudioFilePlayerComponent::buttonClicked(Button* button)
     if (button == &playPauseButton)
     {
         if(audioFilePlayer->isPlaying())
+        {
             audioFilePlayer->changeState(Pause);
+            playPauseButton.setButtonText(">");
+        }
         else
+        {
             audioFilePlayer->changeState(Play);
-        
-        togglePlayPauseButtonText();
+            playPauseButton.setButtonText("||");
+        }
     }
     else if (button == &stopButton)
     {
         if (audioFilePlayer->isPlaying())
-        {
-            togglePlayPauseButtonText();
-        }
+            playPauseButton.setButtonText(">");
+        
         audioFilePlayer->changeState(Stop);
     }
-}
-
-void AudioFilePlayerComponent::togglePlayPauseButtonText()
-{
-    String newText = (playPauseButton.getButtonText() == ">") ? "||" : ">";
-    playPauseButton.setButtonText(newText);
 }
 
 void AudioFilePlayerComponent::filenameComponentChanged (FilenameComponent* fileComponentThatHasChanged)

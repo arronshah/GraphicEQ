@@ -86,21 +86,16 @@ void AudioFilePlayer::releaseResources()
 
 void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    
     audioTransportSource.getNextAudioBlock (bufferToFill);
     
-    if(filter[2] != nullptr) //revise this logic
+    if (bufferToFill.buffer->getNumChannels() > 0)
     {
-        if (bufferToFill.buffer->getNumChannels() > 0)
+        dsp::AudioBlock<float> audioBlock(*bufferToFill.buffer);
+        
+        for (int i = 0; i < 3; i++)
         {
-            dsp::AudioBlock<float> audioBlock(*bufferToFill.buffer);
-            
-            for (int i = 0; i < 3; i++)
-            {
-                if(filter[i]->getCurrentState())
-                    filter[i]->process(audioBlock);
-            }
-            
+            if(filter[i]->getCurrentState())
+                filter[i]->process(audioBlock);
         }
     }
     
@@ -111,7 +106,7 @@ void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToF
             auto* channelData = bufferToFill.buffer->getReadPointer (0, bufferToFill.startSample);
             
             for (auto i = 0; i < bufferToFill.numSamples; ++i)
-                analyser->pushSampleToQueue (channelData[i]);
+                analyser->pushSampleToBuffer(channelData[i]);
         }
     }
 }

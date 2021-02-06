@@ -30,9 +30,6 @@ public:
     //Button listener
     void buttonClicked(Button* button) override;
     
-    /** Toggles the text of the Play/Pause button to reflect state*/
-    void togglePlayPauseButtonText();
-    
     /** Sets the AudioFilePlayer that this component controls
      @param     a pointer to an AudioFilePlayer
      @see AudioFilePlayer*/
