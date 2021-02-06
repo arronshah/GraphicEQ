@@ -10,10 +10,6 @@
 
 #include "FilterComponent.h"
 
-#define BEGIN_WITH(x) { \
-    auto &_ = x;
-
-#define END_WITH() }
 
 FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
     valueTree(vt),
@@ -39,13 +35,11 @@ FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
     
     addAndMakeVisible(frequencySlider);
     
-    BEGIN_WITH(frequencySlider)
-    _.setSliderStyle(Slider::RotaryVerticalDrag);
-    _.setRange(20, 20000, 1);
-    _.setSkewFactorFromMidPoint(500);
-    _.setTextValueSuffix(" Hz");
-    _.setMouseDragSensitivity(80);
-    END_WITH()
+    frequencySlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    frequencySlider.setRange(20, 20000, 1);
+    frequencySlider.setSkewFactorFromMidPoint(500);
+    frequencySlider.setTextValueSuffix(" Hz");
+    frequencySlider.setMouseDragSensitivity(80);
 
     addAndMakeVisible(resonanceSlider);
     resonanceSlider.setRange(0.1, 18, 0.01);
