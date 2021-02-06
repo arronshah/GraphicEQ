@@ -12,6 +12,7 @@
 
 #pragma once
 
+template<class Type>
 class Buffer
 {
 public:
@@ -24,11 +25,11 @@ public:
     
     /** Adds a new sample to the end of the buffer
      @param sample  specifies the new sample to add*/
-    void writeSample(float sample);
+    void writeSample(Type sample);
     
     /** Gets the entire buffer contents
      @return a vector of samples*/
-    std::vector<float> getBuffer();
+    std::vector<Type> getBuffer();
     
     /** Clears the contents of the buffer */
     void clearBuffer();
@@ -43,9 +44,9 @@ public:
     
     /** Return the sample value at a given index in the buffer
      @return a floating point sample value (-1 - 1)*/
-    float getSample(int index);
+    Type getSample(int index);
     
 private:
-    std::vector<float> buffer;
+    std::vector<Type> buffer;
     int bufferIndex;
 };

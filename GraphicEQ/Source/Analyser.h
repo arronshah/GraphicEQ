@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "Buffer.h"
+#include "Buffer.cpp"
 
 enum
 {
@@ -28,7 +29,7 @@ public:
     
     /** Adds a new sample to the buffer
      @param sample   sample to add */
-    void pushSampleToQueue(float sample);
+    void pushSampleToBuffer(float sample);
     
     /**  Applies windowing function to the read buffer and then performs a frequency-only fft
      @return a pointer to the first element of the array of fft data */
@@ -56,10 +57,10 @@ private:
     dsp::WindowingFunction<float> window;
     float fftData[fftSize * 2];
     std::atomic<bool> nextFftBlockReady;
-    Buffer buffer1;
-    Buffer buffer2;
-    std::atomic<Buffer*> writeBuffer;
-    std::atomic<Buffer*> readBuffer;
+    Buffer<float> buffer1;
+    Buffer<float> buffer2;
+    std::atomic<Buffer<float>*> writeBuffer;
+    std::atomic<Buffer<float>*> readBuffer;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Analyser)
     

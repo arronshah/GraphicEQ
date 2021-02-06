@@ -10,33 +10,39 @@
 
 #include "Buffer.h"
 
-Buffer::Buffer(int sizeInSamples)
+template<class Type>
+Buffer<Type>::Buffer(int sizeInSamples)
 {
     buffer.resize(sizeInSamples);
     bufferIndex = 0;
 }
 
-void Buffer::writeSample(float sample)
+template<class Type>
+void Buffer<Type>::writeSample(Type sample)
 {
     buffer[bufferIndex++] = sample;
 }
 
-std::vector<float> Buffer::getBuffer()
+template<class Type>
+std::vector<Type> Buffer<Type>::getBuffer()
 {
     return buffer;
 }
 
-void Buffer::clearBuffer()
+template<class Type>
+void Buffer<Type>::clearBuffer()
 {
     buffer.clear();
 }
 
-int Buffer::getBufferSize()
+template<class Type>
+int Buffer<Type>::getBufferSize()
 {
     return static_cast<int>(buffer.size());
 }
 
-bool Buffer::bufferIsFull()
+template<class Type>
+bool Buffer<Type>::bufferIsFull()
 {
     if(bufferIndex == buffer.size())
     {
@@ -49,7 +55,8 @@ bool Buffer::bufferIsFull()
     }
 }
 
-float Buffer::getSample(int index)
+template<class Type>
+Type Buffer<Type>::getSample(int index)
 {
     return buffer[index];
 }

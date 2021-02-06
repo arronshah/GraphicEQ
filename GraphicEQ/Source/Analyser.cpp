@@ -21,7 +21,7 @@ Analyser::Analyser() :
     readBuffer = &buffer2;
 }
 
-void Analyser::pushSampleToQueue(float sample)
+void Analyser::pushSampleToBuffer(float sample)
 {
     if (writeBuffer.load()->bufferIsFull())
     {
