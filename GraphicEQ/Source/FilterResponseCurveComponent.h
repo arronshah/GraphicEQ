@@ -29,6 +29,10 @@ public:
     
     void setState(bool newState);
     
+    void paintIfFilterOn(Graphics& g);
+    
+    void paintIfFilterOff(Graphics& g);
+    
     //Component
     void paint(Graphics& g);
     void resized();
