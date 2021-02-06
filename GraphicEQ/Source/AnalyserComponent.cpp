@@ -86,27 +86,34 @@ void AnalyserComponent::drawPath(Graphics& g)
 {
     path.clear();
     g.setColour (juce::Colours::paleturquoise);
-    
+
     auto width  = getLocalBounds().getWidth();
     auto height = getLocalBounds().getHeight() - 20;
-    
+
     path.startNewSubPath(0.f, height);
     std::array<Point<float>, 3> points;
-    
+
     for (int i = 1; i < windowSize; i+=2)
     {
         for(int x = 0; x < 3; x++)
             points[x] = getScaledPoint(i+x);
-        
+
         float cX = 2 * points[1].getX() - 0.5 * (points[0].getX() + points[2].getX());
         float cY = 2 * points[1].getY() - 0.5 * (points[0].getY() + points[2].getY());
         Point<float> controlPoint(cX, cY);
-        
+
         if(!isnan(cY)) //remove the need for this condition by fixing repainting issues
         {
             path.lineTo(points[0]);
             path.quadraticTo(controlPoint, points[2]);
         }
+
+
+        //float x = juce::jmap (i, 0, windowSize - 1, 0, getWidth());
+        //float y = juce::jmap (windowData[i], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
+        //g.drawRect(x, y, getWidth() / windowSize, height);
+        //g.fillRect(x, y, (float) getWidth() / windowSize, height - y);
+        //g.drawVerticalLine(x, y, height);
     }
 
     Point<float> end((float) width, (float) height);
@@ -114,7 +121,7 @@ void AnalyserComponent::drawPath(Graphics& g)
     path.lineTo(end);
     path.lineTo(start);
     path.closeSubPath();
-    g.strokePath(path, PathStrokeType(1.f));
+    g.strokePath(path, PathStrokeType(1.5f, PathStrokeType::curved, PathStrokeType::rounded));
     ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
     FillType fill(gradient);
     fill.setOpacity(0.4);
