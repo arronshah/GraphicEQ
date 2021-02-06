@@ -77,6 +77,12 @@ public:
      @param newGain    specifies the new filter gain*/
     void setGain(float newGain);
     
+    void calculateFilterMagnitudes();
+    
+    bool parameterHasChanged();
+    
+    void calculateFilterCoefficients();
+    
 private:
     const int filterType;
     dsp::ProcessorDuplicator <dsp::IIR::Filter<float>, dsp::IIR::Coefficients <float>> filter;

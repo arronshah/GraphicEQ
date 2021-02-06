@@ -43,53 +43,73 @@ void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
     
     filter.prepare(processSpec);
     filter.reset();
-    updateParameters();
 }
 
 void Filter::setFrequency(float newFrequency)
 {
-    frequency = newFrequency;
+    frequency = jlimit(20.f, 20000.f, newFrequency);
 }
 
 void Filter::setResonance(float newResonance)
 {
-    resonance = newResonance;
+    resonance = jlimit((float) 0.1, (float) 18, newResonance);
 }
 
 void Filter::setGain(float newGain)
 {
-    gain = newGain;
+    gain = jlimit((float) 0.01, (float) 2, newGain);
 }
 
 void Filter::updateParameters()
 {
+    if(parameterHasChanged())
+    {
+        calculateFilterCoefficients();
+        calculateFilterMagnitudes();
+    }
+}
+
+void Filter::calculateFilterCoefficients()
+{
+    if(filterType == filterType::LowPass){
+        *filter.state = *dsp::IIR::Coefficients<float>::makeLowShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
+    }
+    else if(filterType == filterType::BandPass){
+        *filter.state = *dsp::IIR::Coefficients<float>::makePeakFilter(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
+    }
+    else if(filterType == filterType::HighPass){
+        *filter.state = *dsp::IIR::Coefficients<float>::makeHighShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
+    }
+}
+
+bool Filter::parameterHasChanged()
+{
+    bool parameterChanged = false;
     
     if(frequency.load() != prevFrequency)
     {
         smoothedFrequency.setTargetValue(frequency.load());
         prevFrequency = frequency.load();
+        parameterChanged = true;
     }
     if(resonance.load() != prevResonance)
     {
         smoothedResonance.setTargetValue(resonance.load());
         prevResonance = resonance.load();
+        parameterChanged = true;
     }
     if(gain.load() != prevGain)
     {
         smoothedGain.setTargetValue(gain.load());
         prevGain = gain.load();
+        parameterChanged = true;
     }
     
-    if(filterType == 0){
-        *filter.state = *dsp::IIR::Coefficients<float>::makeLowShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
-    }
-    else if(filterType == 1){
-        *filter.state = *dsp::IIR::Coefficients<float>::makePeakFilter(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
-    }
-    else{
-        *filter.state = *dsp::IIR::Coefficients<float>::makeHighShelf(lastSampleRate, smoothedFrequency.getNextValue(), smoothedResonance.getNextValue(), smoothedGain.getNextValue());
-    }
-    
+    return parameterChanged;
+}
+
+void Filter::calculateFilterMagnitudes()
+{
     if(!filterMagnitudesReady.load())
     {
         filter.state->getMagnitudeForFrequencyArray(frequencies.data(), magnitudes.data(), frequencies.size(), lastSampleRate);
