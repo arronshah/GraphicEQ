@@ -9,6 +9,7 @@
 */
 
 #include <JuceHeader.h>
+#include "Polyline2D.h"
 
 #pragma once
 
@@ -24,26 +25,18 @@ public:
     void renderOpenGL() override;
     void openGLContextClosing() override;
     bool checkShaderCompileStatus(GLuint shaderID);
+    void updatePoints(std::array<Point<float>, 128> newPoints);
+    void fillBuffer();
     
 private:
     OpenGLContext openGLContext;
     
-    struct Vertex
-    {
-        float position[2];
-        float colour[4];
-    };
+    std::vector<crushedpixel::Vec2> points;
     
-    std::vector<Vertex> vertexBuffer;
-    std::vector<GLuint> indexBuffer;
+    GLuint vaoHandle, vboHandle, programHandle;
     
-    GLuint vertexBufferObject;
-    GLuint indexBufferObject;
+    GLint posInAttribLocation;
+    GLint colorUniformLocation;
     
-    const char* vertexShader;
-    String fragmentShader;
-    GLuint vShader;
-    GLuint fShader;
-    
-    std::unique_ptr<OpenGLShaderProgram> shaderProgram;
+    GLsizei numPoints, numVertices;
 };

@@ -12,10 +12,22 @@
 
 OpenGLComponent::OpenGLComponent()
 {
+    points.resize(128);
+    // Setup a pixel format object to tell the context what level of
+    // multisampling to use.
+    OpenGLPixelFormat pixelFormat;
+    pixelFormat.multisamplingLevel = 4; // Change this value to your needs.
+    
+    openGLContext.setPixelFormat(pixelFormat);
+    
+    openGLContext.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
+    openGLContext.setMultisamplingEnabled(true);
     setOpaque(true);
     openGLContext.setRenderer(this);
     openGLContext.setContinuousRepainting(true);
+    openGLContext.setComponentPaintingEnabled(true);
     openGLContext.attachTo(*this);
+    
 }
 
 OpenGLComponent::~OpenGLComponent()
@@ -23,9 +35,24 @@ OpenGLComponent::~OpenGLComponent()
     openGLContext.detach();
 }
 
+void OpenGLComponent::updatePoints(std::array<Point<float>, 128> newPoints)
+{
+    for(auto i = 0; i < points.size(); i++)
+    {
+        points[i].x = jmap(newPoints[i].getX(), 0.f, 835.f, -1.f, 1.f);
+        points[i].y = jmap(newPoints[i].getY(), 370.f, 0.f, -1.f, 1.f);
+    }
+}
+
+static void writeVec2(juce::MemoryOutputStream &out, const crushedpixel::Vec2 &vec) {
+    // write vertices as two consecutive floats
+    out.writeFloat(vec.x);
+    out.writeFloat(vec.y);
+}
+
 void OpenGLComponent::paint(Graphics& g)
 {
-    //g.fillAll(Colours::black);
+    //g.fillAll(Colours::red);
 }
 
 void OpenGLComponent::resized()
@@ -33,129 +60,93 @@ void OpenGLComponent::resized()
     
 }
 
+void OpenGLComponent::fillBuffer()
+{
+    // generate VAO
+    openGLContext.extensions.glGenVertexArrays(1, &vaoHandle);
+    openGLContext.extensions.glBindVertexArray(vaoHandle);
+    
+    // generate VBOs
+    openGLContext.extensions.glGenBuffers(1, &vboHandle);
+    openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
+    
+    // generate polyline vertices
+    auto vertices = crushedpixel::Polyline2D::create(
+                                                     points, 0.005f,
+                                                     crushedpixel::Polyline2D::JointStyle::ROUND,
+                                                     crushedpixel::Polyline2D::EndCapStyle::ROUND);
+    
+    numPoints = (GLsizei) points.size();
+    numVertices = (GLsizei) vertices.size();
+    
+    // write original points, followed by vertices, to buffer
+    juce::MemoryOutputStream mos;
+    for (auto &vertex : points) {
+        writeVec2(mos, vertex);
+    }
+    for (auto &vertex : vertices) {
+        writeVec2(mos, vertex);
+    }
+    
+    openGLContext.extensions.glBufferData(GL_ARRAY_BUFFER, mos.getDataSize(), mos.getData(), GL_STATIC_DRAW);
+}
+
 void OpenGLComponent::newOpenGLContextCreated()
 {
-    //Generate a buffer and store its ID in vertexBufferObject variable
-    openGLContext.extensions.glGenBuffers(1, &vertexBufferObject);
-    openGLContext.extensions.glGenBuffers(1, &indexBufferObject);
+    // generate VAO
+    openGLContext.extensions.glGenVertexArrays(1, &vaoHandle);
+    openGLContext.extensions.glBindVertexArray(vaoHandle);
     
-    // Create 4 vertices each with a different colour.
-    vertexBuffer = {
-        // Vertex 0
-        {
-            { -0.5f, 0.5f },        // (-0.5, 0.5)
-            { 1.f, 0.f, 0.f, 1.f }  // Red
-        },
-        // Vertex 1
-        {
-            { 0.5f, 0.5f },         // (0.5, 0.5)
-            { 1.f, 0.5f, 0.f, 1.f } // Orange
-        },
-        // Vertex 2
-        {
-            { 0.5f, -0.5f },        // (0.5, -0.5)
-            { 1.f, 1.f, 0.f, 1.f }  // Yellow
-        },
-        // Vertex 3
-        {
-            { -0.5f, -0.5f },       // (-0.5, -0.5)
-            { 1.f, 0.f, 1.f, 1.f }  // Purple
-        }
-    };
+    // generate VBOs
+    openGLContext.extensions.glGenBuffers(1, &vboHandle);
+    openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
     
-    // We need 6 indices, 1 for each corner of the two triangles.
-    indexBuffer = {
-        0, 1, 2,
-        0, 2, 3
-    };
+    // generate polyline vertices
+    auto vertices = crushedpixel::Polyline2D::create(
+                                                     points, 0.0001f,
+                                                     crushedpixel::Polyline2D::JointStyle::ROUND,
+                                                     crushedpixel::Polyline2D::EndCapStyle::SQUARE);
     
-    //Bind the vertexBufferObject
-    openGLContext.extensions.glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+    numPoints = (GLsizei) points.size();
+    numVertices = (GLsizei) vertices.size();
     
-    // Send the vertices data.
-    openGLContext.extensions.glBufferData(
-                                          GL_ARRAY_BUFFER,                        // The type of data we're sending.
-                                          sizeof(Vertex) * vertexBuffer.size(),   // The size (in bytes) of the data.
-                                          vertexBuffer.data(),                    // A pointer to the actual data.
-                                          GL_STATIC_DRAW                          // How we want the buffer to be drawn.
-                                          );
-    
-    // Bind the IBO.
-    openGLContext.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-    
-    // Send the indices data.
-    openGLContext.extensions.glBufferData(
-                                          GL_ELEMENT_ARRAY_BUFFER,
-                                          sizeof(GLuint) * indexBuffer.size(),
-                                          indexBuffer.data(),
-                                          GL_STATIC_DRAW
-                                          );
-    
-    vertexShader =
-        R"(
-                // Input attributes.
-                varying vec4 position;
-                varying vec4 sourceColour;
-    
-                // Output to fragment shader.
-                varying vec4 fragColour;
-    
-                void main()
-                {
-                    // Set the position to the attribute we passed in.
-                    gl_Position = position;
-                    
-                    // Set the frag colour to the attribute we passed in.
-                    // This value will be interpolated for us before the fragment
-                    // shader so the colours we defined ateach vertex will create a
-                    // gradient across the shape.
-                    fragColour = sourceColour;
-                }
-            )";
-    
-            fragmentShader =
-            R"(
-    
-            // The value that was output by the vertex shader.
-            // This MUST have the exact same name that we used in the vertex shader.
-            varying vec4 fragColour;
-    
-            void main()
-            {
-                // Set the fragment's colour to the attribute passed in by the
-                // vertex shader.
-                gl_FragColor = fragColour;
-            }
-            )";
-    
-//    openGLContext.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
-//    vShader = openGLContext.extensions.glCreateShader(GL_VERTEX_SHADER);
-//    openGLContext.extensions.glShaderSource(vShader, 1, &vertexShader, NULL);
-//    openGLContext.extensions.glCompileShader(vShader);
-//    if (!checkShaderCompileStatus(vShader)) {
-//        DBG("SHADER DID NOT COMPILE");
-//    }
-    
-    
-    // Create an instance of OpenGLShaderProgram
-    shaderProgram.reset(new OpenGLShaderProgram(openGLContext));
-    
-    // Compile and link the shader.
-    // Each of these methods will return false if something goes wrong so we'll
-    // wrap them in an if statement
-    if (shaderProgram->addVertexShader(vertexShader)
-        && shaderProgram->addFragmentShader(fragmentShader)
-        && shaderProgram->link())
-    {
-        // No compilation errors - set the shader program to be active
-        shaderProgram->use();
+    // write original points, followed by vertices, to buffer
+    juce::MemoryOutputStream mos;
+    for (auto &vertex : points) {
+        writeVec2(mos, vertex);
     }
-    else
-    {
-        // Oops - something went wrong with our shaders!
-        // Check the output window of your IDE to see what the error might be.
-        jassertfalse;
+    for (auto &vertex : vertices) {
+        writeVec2(mos, vertex);
     }
+    
+    openGLContext.extensions.glBufferData(GL_ARRAY_BUFFER, mos.getDataSize(), mos.getData(), GL_STATIC_DRAW);
+    
+    // generate Shader Program
+    auto vert = openGLContext.extensions.glCreateShader(GL_VERTEX_SHADER);
+    auto frag = openGLContext.extensions.glCreateShader(GL_FRAGMENT_SHADER);
+    
+    openGLContext.extensions.glShaderSource(vert, 1, &BinaryData::Passthrough_vert, &BinaryData::Passthrough_vertSize);
+    openGLContext.extensions.glShaderSource(frag, 1, &BinaryData::PlainColor_frag, &BinaryData::PlainColor_fragSize);
+    
+    openGLContext.extensions.glCompileShader(vert);
+    openGLContext.extensions.glCompileShader(frag);
+    // no error checking, I don't make mistakes (lol)
+    
+    programHandle = openGLContext.extensions.glCreateProgram();
+    openGLContext.extensions.glAttachShader(programHandle, vert);
+    openGLContext.extensions.glAttachShader(programHandle, frag);
+    openGLContext.extensions.glLinkProgram(programHandle);
+    
+    openGLContext.extensions.glDeleteShader(vert);
+    openGLContext.extensions.glDeleteShader(frag);
+    
+    // get shader attribute locations
+    posInAttribLocation = openGLContext.extensions.glGetAttribLocation(programHandle, "posIn");
+    colorUniformLocation = openGLContext.extensions.glGetUniformLocation(programHandle, "color");
+    
+    // tell OpenGL to read the input data as pairs of floats
+    openGLContext.extensions.glVertexAttribPointer(posInAttribLocation, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    openGLContext.extensions.glEnableVertexAttribArray(posInAttribLocation);
 }
 
 bool OpenGLComponent::checkShaderCompileStatus(GLuint shaderID) {
@@ -174,56 +165,60 @@ bool OpenGLComponent::checkShaderCompileStatus(GLuint shaderID) {
 
 void OpenGLComponent::renderOpenGL()
 {
+    newOpenGLContextCreated();
+    
     OpenGLHelpers::clear(Colours::black);
-    shaderProgram->use();
     
-    GLsizei stride = sizeof(Vertex);
+    openGLContext.extensions.glBindVertexArray(vaoHandle);
+    openGLContext.extensions.glUseProgram(programHandle);
     
-    //Enable the position attribute.
-    openGLContext.extensions.glVertexAttribPointer(
-                                                   0,              // The attribute's index (AKA location).
-                                                   2,              // How many values this attribute contains.
-                                                   GL_FLOAT,       // The attribute's type (float).
-                                                   GL_FALSE,       // Tells OpenGL NOT to normalise the values.
-                                                   stride, // How many bytes to move to find the attribute with
-                                                   // the same index in the next vertex.
-                                                   nullptr         // How many bytes to move from the start of this vertex
-                                                   // to find this attribute (the default is 0 so we just
-                                                   // pass nullptr here).
-                                                   );
-    //openGLContext.extensions.glEnableVertexAttribArray(0);
-
-   //  Enable to colour attribute.
-    openGLContext.extensions.glVertexAttribPointer(
-                                                   1,                              // This attribute has an index of 1
-                                                   4,                              // This time we have four values for the
-                                                   // attribute (r, g, b, a)
-                                                   GL_FLOAT,
-                                                   GL_FALSE,
-                                                   stride,
-                                                   (GLvoid*)(sizeof(float) * 2)    // This attribute comes after the
-                                                   // position attribute in the Vertex
-                                                   // struct, so we need to skip over the
-                                                   // size of the position array to find
-                                                   // the start of this attribute.
-                                                   );
-    openGLContext.extensions.glEnableVertexAttribArray(1);
+    {   // draw wireframe
+        auto color = juce::Colours::lightgreen;
+        openGLContext.extensions.glUniform4f(colorUniformLocation,
+                        color.getFloatRed(),
+                        color.getFloatGreen(),
+                        color.getFloatBlue(),
+                        color.getFloatAlpha());
+        
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawArrays(GL_TRIANGLES, numPoints, numVertices);
+    }
     
-    //glDrawArrays(GL_TRIANGLES, 0, sizeof(indexBuffer));
+//    {   // fill solid
+//        auto color = juce::Colours::green.withAlpha(0.5f);
+//        openGLContext.extensions.glUniform4f(colorUniformLocation,
+//                        color.getFloatRed(),
+//                        color.getFloatGreen(),
+//                        color.getFloatBlue(),
+//                        color.getFloatAlpha());
+//
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//        glDrawArrays(GL_TRIANGLES, numPoints, numVertices);
+//    }
     
-    glDrawElements(
-                   GL_TRIANGLES,       // Tell OpenGL to render triangles.
-                   6, // How many indices we have.
-                   GL_UNSIGNED_INT,    // What type our indices are.
-                   nullptr             // We already gave OpenGL our indices so we don't
-                   // need to pass that again here, so pass nullptr.
-                   );
+//    {   // draw original points
+//        glPointSize(5);
+//
+//        auto color = juce::Colours::red;
+//        openGLContext.extensions.glUniform4f(colorUniformLocation,
+//                        color.getFloatRed(),
+//                        color.getFloatGreen(),
+//                        color.getFloatBlue(),
+//                        color.getFloatAlpha());
+//
+//        glDrawArrays(GL_POINTS, 0, numPoints);
+//    }
     
-    openGLContext.extensions.glDisableVertexAttribArray(0);
-    openGLContext.extensions.glDisableVertexAttribArray(1);
+    openGLContext.extensions.glDeleteVertexArrays(1, &vaoHandle);
+    openGLContext.extensions.glDeleteBuffers(1, &vboHandle);
+    openGLContext.extensions.glDeleteProgram(programHandle);
+    
+    
 }
 
 void OpenGLComponent::openGLContextClosing()
 {
-    
+    openGLContext.extensions.glDeleteVertexArrays(1, &vaoHandle);
+    openGLContext.extensions.glDeleteBuffers(1, &vboHandle);
+    openGLContext.extensions.glDeleteProgram(programHandle);
 }
