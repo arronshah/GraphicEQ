@@ -12,7 +12,7 @@
 
 Analyser::Analyser() :
         fft(fftOrder),
-        window(fftSize, dsp::WindowingFunction<float>::blackman),
+        window(fftSize, dsp::WindowingFunction<float>::hamming),
         nextFftBlockReady(false),
         buffer1(fftSize),
         buffer2(fftSize)
