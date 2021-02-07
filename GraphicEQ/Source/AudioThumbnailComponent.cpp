@@ -12,7 +12,8 @@
 
 AudioThumbnailComponent::AudioThumbnailComponent() :
         audioThumbnail(512, formatManager, audioThumbnailCache),
-        audioThumbnailCache(2)
+        audioThumbnailCache(2),
+        thumbnailImage(Image::RGB, 880, 80, true)
 {
     formatManager.registerBasicFormats();
     audioThumbnail.addChangeListener(this);
@@ -27,15 +28,15 @@ AudioThumbnailComponent::~AudioThumbnailComponent()
 
 void AudioThumbnailComponent::paint (juce::Graphics& g)
 {
-    Rectangle<int> audioThumbnailArea = getLocalBounds().removeFromBottom(80).reduced(UIElementProperties::buttonPadding);
+    audioThumbnailArea = getLocalBounds().removeFromBottom(80).reduced(UIElementProperties::buttonPadding);
     
     if(audioThumbnail.getNumChannels() == 0)
-        paintIfNoFileLoaded(g, audioThumbnailArea);
+        paintIfNoFileLoaded(g);
     else
-        paintIfFileLoaded(g, audioThumbnailArea);
+        paintIfFileLoaded(g);
 }
 
-void AudioThumbnailComponent::paintIfNoFileLoaded (juce::Graphics& g, const juce::Rectangle<int>& audioThumbnailArea)
+void AudioThumbnailComponent::paintIfNoFileLoaded (juce::Graphics& g)
 {
     g.setColour (juce::Colours::darkgrey);
     g.fillRect (audioThumbnailArea);
@@ -43,18 +44,13 @@ void AudioThumbnailComponent::paintIfNoFileLoaded (juce::Graphics& g, const juce
     g.drawFittedText ("No File Loaded", audioThumbnailArea, juce::Justification::centred, 1);
 }
 
-void AudioThumbnailComponent::paintIfFileLoaded (juce::Graphics& g, juce::Rectangle<int> audioThumbnailArea)
+void AudioThumbnailComponent::paintIfFileLoaded (juce::Graphics& g)
 {
-    g.setColour (juce::Colours::darkgrey);
-    g.fillRect (audioThumbnailArea);
-    
-    g.setColour (juce::Colours::darkturquoise);
-    float audioFileLength = audioThumbnail.getTotalLength();
-    audioThumbnail.drawChannels (g, audioThumbnailArea, 0.0, audioFileLength, 1.0f);
+    g.drawImage(thumbnailImage, 0, 0, thumbnailImage.getWidth(), thumbnailImage.getHeight(), 0, 0, getWidth(), getHeight());
     
     g.setColour(Colours::white);
     double currentAudioPosition = audioFilePlayer->getCurrentPosition();
-    auto drawPosition = (currentAudioPosition / audioFileLength) * (float) audioThumbnailArea.getWidth() + (float) audioThumbnailArea.getX();
+    float drawPosition = (currentAudioPosition / audioFileLength) * (float) audioThumbnailArea.getWidth() + (float) audioThumbnailArea.getX();
     g.drawLine (drawPosition, (float) audioThumbnailArea.getY(), drawPosition,
                 (float) audioThumbnailArea.getBottom(), 2.0f);
     
@@ -68,7 +64,20 @@ void AudioThumbnailComponent::paintIfFileLoaded (juce::Graphics& g, juce::Rectan
 void AudioThumbnailComponent::changeListenerCallback (juce::ChangeBroadcaster* source)
 {
     if (source == &audioThumbnail)
+    {
+        cacheAudioThumbnailImage();
         repaint();
+    }
+}
+
+void AudioThumbnailComponent::cacheAudioThumbnailImage()
+{
+    Graphics g2(thumbnailImage);
+    g2.setColour (juce::Colours::darkgrey);
+    g2.fillRect (audioThumbnailArea);
+    g2.setColour (juce::Colours::darkturquoise);
+    audioFileLength = audioThumbnail.getTotalLength();
+    audioThumbnail.drawChannels (g2, audioThumbnailArea, 0.0, audioFileLength, 1.0f);
 }
 
 void AudioThumbnailComponent::timerCallback()

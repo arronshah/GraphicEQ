@@ -27,12 +27,12 @@ public:
     /** Draws a watermark if no file is loaded
      @param g   specifies a graphics object to draw with
      @param thumbnailBounds     the bounds to draw within*/
-    void paintIfNoFileLoaded (juce::Graphics& g, const Rectangle<int>& thumbnailBounds);
+    void paintIfNoFileLoaded (juce::Graphics& g);
     
     /** Draws a watermark if file is loaded
      @param g   specifies a graphics object to draw with
      @param thumbnailBounds     the bounds to draw within*/
-    void paintIfFileLoaded (juce::Graphics& g, const Rectangle<int> audioThumbnailArea);
+    void paintIfFileLoaded (juce::Graphics& g);
     
     /** Sets the AudioFilePlayer that this component controls
      @param afp     a pointer to an AudioFilePlayer
@@ -45,6 +45,8 @@ public:
     
     //ChangeListener
     void changeListenerCallback (juce::ChangeBroadcaster* source) override;
+    
+    void cacheAudioThumbnailImage();
     
     //Component
     void paint (juce::Graphics& g) override;
@@ -63,5 +65,10 @@ private:
     AudioThumbnailCache audioThumbnailCache;
     AudioFilePlayer* audioFilePlayer;
     bool mouseInsideComponent;
+    
+    Image thumbnailImage;
+    float audioFileLength;
+    Rectangle<int> audioThumbnailArea;
+    float prevDrawPosition;
     
 };
