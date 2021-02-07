@@ -17,12 +17,18 @@ AnalyserComponent::AnalyserComponent()
 
 void AnalyserComponent::paint(Graphics& g)
 {
-    if(!gridIsDrawn)
-        drawGrid(g);
+    if(!gridIsCached)
+        cacheGrid();
+    
+    g.drawImage(*grid, 0, 0, grid->getWidth(), grid->getHeight(), 0, 0, getWidth(), getHeight());
 }
 
-void AnalyserComponent::drawGrid(Graphics& g)
+void AnalyserComponent::cacheGrid()
 {
+    grid = new Image(Image::RGB, getWidth(), getHeight(), true);
+    
+    Graphics g(*grid);
+    
     const auto bounds = getLocalBounds();
     const auto height = bounds.getHeight() - 20;
     const auto width = bounds.getWidth();
@@ -65,10 +71,10 @@ void AnalyserComponent::drawGrid(Graphics& g)
             frequencyAsString << frequencyLabel;
         }
         
-        
         g.drawText(frequencyAsString, linePosition, height, 40, 20, Justification::left);
     }
-
+    
+    gridIsCached = true;
 }
 
 float AnalyserComponent::frequencyToDecimal (float freq)
@@ -78,8 +84,8 @@ float AnalyserComponent::frequencyToDecimal (float freq)
 
 void AnalyserComponent::paintOverChildren(Graphics& g)
 {
-    if(analyser != nullptr)
-        drawPath(g);
+//    if(analyser != nullptr)
+//        drawPath(g);
 }
 
 void AnalyserComponent::drawPath(Graphics& g)
@@ -107,13 +113,6 @@ void AnalyserComponent::drawPath(Graphics& g)
             path.lineTo(points[0]);
             path.quadraticTo(controlPoint, points[2]);
         }
-
-
-        //float x = juce::jmap (i, 0, windowSize - 1, 0, getWidth());
-        //float y = juce::jmap (windowData[i], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
-        //g.drawRect(x, y, getWidth() / windowSize, height);
-        //g.fillRect(x, y, (float) getWidth() / windowSize, height - y);
-        //g.drawVerticalLine(x, y, height);
     }
 
     Point<float> end((float) width, (float) height);
@@ -127,6 +126,22 @@ void AnalyserComponent::drawPath(Graphics& g)
     fill.setOpacity(0.4);
     g.setFillType(fill);
     g.fillPath(path);
+}
+
+void AnalyserComponent::pushPointsToOpenGLContext()
+{
+    std::array<Point<float>, windowSize> pointsArr;
+    
+    for (int i = 1; i < windowSize; i++)
+        pointsArr[i] = getScaledPoint(i);
+    
+    if(openGLComponent != nullptr)
+        openGLComponent->updatePoints(pointsArr);
+}
+
+void AnalyserComponent::setOpenGLComponent(OpenGLComponent* glRef)
+{
+    openGLComponent = glRef;
 }
 
 Point<float> AnalyserComponent::getScaledPoint(int windowDataIndex)
@@ -145,7 +160,8 @@ void AnalyserComponent::timerCallback()
         {
             prepareNextFrame();
             analyser->setNextFftBlockIsReady(false);
-            repaint();
+            pushPointsToOpenGLContext();
+//            repaint();
         }
     }
 }

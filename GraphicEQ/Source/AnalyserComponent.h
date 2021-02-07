@@ -11,6 +11,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "Analyser.h"
+#include "OpenGLComponent.h"
 #include <array>
 #include <cmath>
 
@@ -46,7 +47,7 @@ public:
     /** Draws a logarithmic grid that sits behind the spectrum plot
      @param g   a reference to a graphics object
      @see drawPath()*/
-    void drawGrid(Graphics& g);
+    void cacheGrid();
     
     /** Converts a frequency value to a decimal logarithmically
      @param freq    specifies the frequency to convert
@@ -58,12 +59,16 @@ public:
      @return a Point object containing X and Y coordinates*/
     Point<float> getScaledPoint(int windowDataIndex);
     
+    void setOpenGLComponent(OpenGLComponent* glRef);
+    
+    void pushPointsToOpenGLContext();
+    
 private:
     Analyser* analyser {nullptr};
     float* fftData {nullptr};
     float windowData[windowSize];
     Path path;
-    bool gridIsDrawn = false;
+    bool gridIsCached = false;
     float gridFrequencyValues[28] = {
         20.f, 30.f, 40.f, 50.f, 60.f, 70.f, 80.f, 90.f, 100.f, 200.f, 300.f, 400.f, 500.f, 600.f, 700.f, 800.f, 900.f, 1000.f, 2000.f, 3000.f, 4000.f, 5000.f, 6000.f, 7000.f, 8000.f, 9000.f, 10000.f, 20000.f
     };
@@ -73,6 +78,10 @@ private:
     float gridGainValues[7] = {0.f, -12.f, -24.f, -36.f, -48.f, -60.f, -72.f};
     
     float peakLevel = 0;
+    
+    OpenGLComponent* openGLComponent {nullptr};
+    
+    Image* grid;
     
     
 };
