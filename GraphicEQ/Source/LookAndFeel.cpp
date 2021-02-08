@@ -11,9 +11,12 @@
 #include "LookAndFeel.h"
 #include "UIElementProperties.h"
 
+//All code below taken from Witte/Eq plugin - except some minor colours changes https://github.com/witte/Eq
+
 void UILookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int height,
                                     float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, Slider& slider)
 {
+    
     
     auto outline = slider.getParentComponent()->findColour(Slider::rotarySliderOutlineColourId);
     
