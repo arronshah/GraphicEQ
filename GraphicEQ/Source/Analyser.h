@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "Buffer.h"
 #include "Buffer.cpp"
+#include "Helpers.h"
 
 enum
 {
@@ -48,10 +49,6 @@ public:
     float getPeakValue();
     
 private:
-    /** Swaps two atomic pointers
-     @param x   pointer one
-     @param y   pointer two */
-    template<typename Type> void swapAtomicPointers(std::atomic<Type*>&x, std::atomic<Type*>&y);
     
     dsp::FFT fft;
     dsp::WindowingFunction<float> window;

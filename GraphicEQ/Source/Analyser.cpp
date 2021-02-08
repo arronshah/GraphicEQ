@@ -29,19 +29,12 @@ void Analyser::pushSampleToBuffer(float sample)
         {
             juce::zeromem (fftData, sizeof (fftData));
             memcpy(fftData, writeBuffer.load()->getBuffer().data(), writeBuffer.load()->getBufferSize());
-            swapAtomicPointers(writeBuffer, readBuffer);
+            Helpers::swapAtomicPointers(writeBuffer, readBuffer);
             nextFftBlockReady = true;
         }
     }
     
     writeBuffer.load()->writeSample(sample);
-}
-
-template<typename Type> void Analyser::swapAtomicPointers(std::atomic<Type*>&x, std::atomic<Type*>&y)
-{
-    Type* temp = x.load();
-    x = y.load();
-    y = temp;
 }
 
 float* Analyser::getFftData()
