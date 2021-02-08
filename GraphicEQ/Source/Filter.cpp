@@ -18,12 +18,7 @@ Filter::Filter(enum filterType type)
       resonance(0.7),
       gain(1.0)
 {
-    frequencies.resize (300);
-    for (size_t i=0; i < frequencies.size(); i++)
-    {
-        frequencies [i] = 20.0 * std::pow (2.0, i / 30.0);
-    }
-    magnitudes.resize (frequencies.size());
+    
 }
 
 void Filter::process(dsp::AudioBlock<float> audioBlock)
@@ -34,6 +29,15 @@ void Filter::process(dsp::AudioBlock<float> audioBlock)
 
 void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
 {
+    //initalise vectors for frequency points and magnitudes
+    frequencies.resize (300);
+    
+    for (size_t i=0; i < frequencies.size(); i++)
+        frequencies [i] = 20.0 * std::pow (2.0, i / 30.0);
+    
+    magnitudes.resize (frequencies.size());
+    
+    
     lastSampleRate = sampleRate;
     
     dsp::ProcessSpec processSpec;

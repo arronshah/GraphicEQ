@@ -25,8 +25,9 @@ FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
     node.setProperty("state", 0, nullptr);
     valueTree.addChild(node, type, nullptr);
     valueTree.addListener(this);
-    DBG(valueTree.toXmlString());
     filterSubTree = valueTree.getChildWithProperty("filterType", type);
+    
+    DBG(valueTree.toXmlString());
     
     addAndMakeVisible(filterOn);
     filterOn.setName("filterOn");
@@ -57,39 +58,14 @@ FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
     gainSlider.setMouseDragSensitivity(80);
     addAndMakeVisible(gainSlider);
     
-    frequencySlider.addListener(this);
-    resonanceSlider.addListener(this);
-    gainSlider.addListener(this);
-    
-    frequencySliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &frequencySlider, "frequency");
-    resonanceSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &resonanceSlider, "resonance");
-    gainSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &gainSlider, "gain");
+    frequencySliderAttachment = std::make_unique<ValueTreeSliderAttachment>(filterSubTree, &frequencySlider, "frequency");
+    resonanceSliderAttachment = std::make_unique<ValueTreeSliderAttachment>(filterSubTree, &resonanceSlider, "resonance");
+    gainSliderAttachment = std::make_unique<ValueTreeSliderAttachment>(filterSubTree, &gainSlider, "gain");
 }
 
 FilterComponent::~FilterComponent()
 {
-    delete frequencySliderAttachment;
-    delete resonanceSliderAttachment;
-    delete gainSliderAttachment;
-}
-
-void FilterComponent::sliderValueChanged(Slider* slider)
-{
-    if (filterResponseComponent != nullptr)
-    {
-        if(filter->getCurrentState())
-        {
-            if(filter->getFilterMagnitudesReady())
-            {
-                averageFilterResponseCurveComponent->setMagnitudes(filter->getMagnitudes(), filterType);
-                drawResponseCurves();
-                
-                filterResponseComponent->drawResponseCurveHandle(filterSubTree["frequency"], filterSubTree["gain"]);
-                
-                filter->setFilterMagnitudesReady(false);
-            }    
-        }
-    }
+    
 }
 
 void FilterComponent::updateFilterParameter(String parameterName, float parameterValue)
@@ -100,6 +76,8 @@ void FilterComponent::updateFilterParameter(String parameterName, float paramete
         filter->setResonance(parameterValue);
     else if(parameterName == "gain")
         filter->setGain(Decibels::decibelsToGain(parameterValue));
+    else if(parameterName == "state")
+        filter->setState(parameterValue);
 }
 
 void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
@@ -110,6 +88,8 @@ void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasC
     {
         float propertyValue = treeWhosePropertyHasChanged.getProperty(property);
         updateFilterParameter(property.toString(), propertyValue);
+        
+        updateResponseCurves();
     }
 }
 
@@ -133,9 +113,7 @@ void FilterComponent::resized()
     gainSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
     
     if (filterResponseComponent != nullptr)
-    {
-        drawResponseCurves();
-    }
+        updateResponseCurves();
 }
 
 void FilterComponent::setFilter(Filter* filterRef)
@@ -151,7 +129,6 @@ void FilterComponent::setFilterResponseComponent(FilterResponseCurveComponent* f
 
 void FilterComponent::buttonClicked(Button* button)
 {
-    DBG(valueTree.toXmlString());
     if(button->getName() == "filterOn")
     {
         if(button->getToggleState())
@@ -164,25 +141,28 @@ void FilterComponent::buttonClicked(Button* button)
             button->setToggleState(true, dontSendNotification);
             button->setButtonText("On");
         }
-        
-        filter->setState(button->getToggleState());
-        
-        if(filter->getFilterMagnitudesReady())
-        {
-            if(!filter->getCurrentState())
-                averageFilterResponseCurveComponent->resetMagnitudes(filterType);
-            else
-                averageFilterResponseCurveComponent->setMagnitudes(filter->getMagnitudes(), filterType);
-            
-            drawResponseCurves();
-        }
     } 
 }
 
-void FilterComponent::drawResponseCurves()
+void FilterComponent::updateResponseCurves()
 {
-    averageFilterResponseCurveComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
-    filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
+    if(filter->getCurrentState())
+    {
+        if(filter->getFilterMagnitudesReady())
+        {
+            filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
+            
+            averageFilterResponseCurveComponent->setMagnitudes(filter->getMagnitudes(), filterType);
+            averageFilterResponseCurveComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
+            
+            filter->setFilterMagnitudesReady(false);
+        }
+    }
+    else
+    {
+        averageFilterResponseCurveComponent->resetMagnitudes(filterType);
+        averageFilterResponseCurveComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
+    }
 }
 
 void FilterComponent::setAverageFilterResponseComponent(AverageFilterResponseCurveComponent* afrcc)
