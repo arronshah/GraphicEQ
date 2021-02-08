@@ -12,37 +12,48 @@
 
 FilterResponseCurveComponent::FilterResponseCurveComponent()
 {
-    responseCurve.clear();
+    initialise();
 }
 
 void FilterResponseCurveComponent::paint(Graphics& g)
 {
-    if(filterState)
-        paintIfFilterOn(g);
-    else
-        paintIfFilterOff(g);
+    if(valueTree != nullptr)
+    {
+        if(valueTree->getProperty("state"))
+            paintIfFilterOn(g);
+        else
+            paintIfFilterOff(g);
+    }
+}
+
+void FilterResponseCurveComponent::initialise()
+{
+    responseCurve.clear();
+}
+
+void FilterResponseCurveComponent::setValueTree(ValueTree* vt)
+{
+    valueTree = vt;
+}
+
+void FilterResponseCurveComponent::setColour(Colour newColour)
+{
+    colour = newColour;
 }
 
 void FilterResponseCurveComponent::paintIfFilterOn(Graphics& g)
 {
-    Point<float> start(0.f, (float) getHeight());
-    Point<float> end((float) getWidth(), (float) getHeight());
-    
-    g.setColour(Colours::grey);
+    g.setColour(colour);
     g.setOpacity(1.f);
     g.strokePath(responseCurve, PathStrokeType(3.f));
-    
-    ColourGradient gradient(Colours::grey, start, Colours::paleturquoise, end, true);
-    FillType fill(gradient);
-    fill.setOpacity(0.2);
-    g.setFillType(fill);
-    g.fillPath(responseCurve);
+    g.strokePath(responseCurveHandle, PathStrokeType(3.f));
+    g.fillPath(responseCurveHandle);
 }
 
 void FilterResponseCurveComponent::paintIfFilterOff(Graphics& g)
 {
     g.setColour(Colours::grey);
-    g.setOpacity(0.3);
+    g.setOpacity(1.f);
     g.strokePath(responseCurve, PathStrokeType(3.f));
 }
 
@@ -51,16 +62,24 @@ void FilterResponseCurveComponent::resized()
     
 }
 
-void FilterResponseCurveComponent::setState(bool newState)
+void FilterResponseCurveComponent::drawResponseCurveHandle(float filterFrequency, float filterGain)
 {
-    filterState = newState;
+    responseCurveHandle.clear();
+    
+    float freqAsDecimal = Helpers::frequencyToDecimal(filterFrequency);
+    
+    float xPos = jmap(freqAsDecimal, (float) 0.f, (float) getWidth());
+    float yPos = jmap(filterGain, -24.f, 24.f, (float) getHeight() - 20 , 0.f);
+    
+    responseCurveHandle.addEllipse(xPos, (float) yPos, 8.f, 8.f);
+    
+    repaint();
 }
 
-void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags, bool state)
+void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags)
 {
     responseCurve.clear();
-    filterState = state;
-    
+   
     float height = getHeight() - 20;
     float width = getWidth();
     
@@ -73,13 +92,10 @@ void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* freque
     for (size_t i=1; i < frequencies->size(); ++i)
     {
         float x = float (getX() + i * xFactor);
-        float yCalc = float (mags [i] > 0 ? (height / 2.f) - pixelsPerDouble * std::log (mags [i]) / std::log (2) : height);
+        float yCalc = float (mags[i] > 0 ? (height / 2.f) - pixelsPerDouble * std::log (mags[i]) / std::log (2) : height);
         float y = (yCalc > height) ? height : yCalc;
         responseCurve.lineTo (x, y);
     }
-    
-    responseCurve.lineTo(width, height);
-    responseCurve.closeSubPath();
     
     repaint();
 }

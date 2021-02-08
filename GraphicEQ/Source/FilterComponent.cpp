@@ -21,41 +21,49 @@ FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
     node.setProperty("filterType", type, nullptr);
     node.setProperty("frequency", 440.f, nullptr);
     node.setProperty("resonance", 0.7, nullptr);
-    node.setProperty("gain", 1.f, nullptr);
+    node.setProperty("gain", 0.f, nullptr);
     node.setProperty("state", 0, nullptr);
     valueTree.addChild(node, type, nullptr);
     valueTree.addListener(this);
     DBG(valueTree.toXmlString());
+    filterSubTree = valueTree.getChildWithProperty("filterType", type);
     
     addAndMakeVisible(filterOn);
     filterOn.setName("filterOn");
     filterOn.setButtonText("Off");
     filterOn.setToggleState(false, dontSendNotification);
     filterOn.addListener(this);
+    filterOn.getToggleStateValue().referTo(filterSubTree.getPropertyAsValue("state", nullptr));
     
-    addAndMakeVisible(frequencySlider);
-    
+    frequencySlider.setName("frequencySlider");
     frequencySlider.setSliderStyle(Slider::RotaryVerticalDrag);
     frequencySlider.setRange(20, 20000, 1);
     frequencySlider.setSkewFactorFromMidPoint(500);
     frequencySlider.setTextValueSuffix(" Hz");
     frequencySlider.setMouseDragSensitivity(80);
+    addAndMakeVisible(frequencySlider);
 
-    addAndMakeVisible(resonanceSlider);
+    resonanceSlider.setName("resonanceSlider");
     resonanceSlider.setRange(0.1, 18, 0.01);
     resonanceSlider.setMouseDragSensitivity(80);
     resonanceSlider.setSliderStyle(Slider::RotaryVerticalDrag);
     resonanceSlider.setSkewFactorFromMidPoint(1);
+    addAndMakeVisible(resonanceSlider);
     
-    addAndMakeVisible(gainSlider);
+    gainSlider.setName("gainSlider");
     gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
     gainSlider.setTextValueSuffix(" dB");
-    gainSlider.setRange(0.01, 2.f, 0.01);
+    gainSlider.setRange(-24.f, 24.f, 0.01);
     gainSlider.setMouseDragSensitivity(80);
+    addAndMakeVisible(gainSlider);
     
     frequencySlider.addListener(this);
     resonanceSlider.addListener(this);
     gainSlider.addListener(this);
+    
+    frequencySliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &frequencySlider, "frequency");
+    resonanceSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &resonanceSlider, "resonance");
+    gainSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &gainSlider, "gain");
 }
 
 FilterComponent::~FilterComponent()
@@ -69,10 +77,17 @@ void FilterComponent::sliderValueChanged(Slider* slider)
 {
     if (filterResponseComponent != nullptr)
     {
-        if(filter->getFilterMagnitudesReady())
+        if(filter->getCurrentState())
         {
-            filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), filter->getCurrentState());
-            filter->setFilterMagnitudesReady(false);
+            if(filter->getFilterMagnitudesReady())
+            {
+                averageFilterResponseCurveComponent->setMagnitudes(filter->getMagnitudes(), filterType);
+                drawResponseCurves();
+                
+                filterResponseComponent->drawResponseCurveHandle(filterSubTree["frequency"], filterSubTree["gain"]);
+                
+                filter->setFilterMagnitudesReady(false);
+            }    
         }
     }
 }
@@ -80,17 +95,11 @@ void FilterComponent::sliderValueChanged(Slider* slider)
 void FilterComponent::updateFilterParameter(String parameterName, float parameterValue)
 {
     if(parameterName == "frequency")
-    {
         filter->setFrequency(parameterValue);
-    }
     else if(parameterName == "resonance")
-    {
         filter->setResonance(parameterValue);
-    }
     else if(parameterName == "gain")
-    {
-        filter->setGain(parameterValue);
-    }
+        filter->setGain(Decibels::decibelsToGain(parameterValue));
 }
 
 void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
@@ -104,19 +113,10 @@ void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasC
     }
 }
 
-void FilterComponent::createValueTreeAttachments(int index)
-{
-    filterSubTree = valueTree.getChildWithProperty("filterType", index);
-    frequencySliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &frequencySlider, "frequency");
-    resonanceSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &resonanceSlider, "resonance");
-    gainSliderAttachment = new ValueTreeSliderAttachment(filterSubTree, &gainSlider, "gain");
-}
-
 void FilterComponent::paint (juce::Graphics& g)
 {
     Rectangle<int> bounds = getLocalBounds().reduced(UIElementProperties::buttonPadding);
-    g.setColour(Colours::black);
-    g.setOpacity(0.1);
+    g.setColour(Colour::fromRGB(18, 18, 18).withLightness(10));
     g.fillRoundedRectangle(bounds.toFloat(), 3.f);
 }
 
@@ -133,7 +133,9 @@ void FilterComponent::resized()
     gainSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
     
     if (filterResponseComponent != nullptr)
-        filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), filter->getCurrentState());
+    {
+        drawResponseCurves();
+    }
 }
 
 void FilterComponent::setFilter(Filter* filterRef)
@@ -144,29 +146,46 @@ void FilterComponent::setFilter(Filter* filterRef)
 void FilterComponent::setFilterResponseComponent(FilterResponseCurveComponent* frcc)
 {
     filterResponseComponent = frcc;
+    filterResponseComponent->setValueTree(&filterSubTree);
 }
 
 void FilterComponent::buttonClicked(Button* button)
 {
+    DBG(valueTree.toXmlString());
     if(button->getName() == "filterOn")
     {
-        if(filterSubTree["state"])
+        if(button->getToggleState())
         {
             button->setToggleState(false, dontSendNotification);
             button->setButtonText("Off");
-            filterSubTree.setProperty("state", 0, nullptr);
         }
         else
         {
             button->setToggleState(true, dontSendNotification);
             button->setButtonText("On");
-            filterSubTree.setProperty("state", 1, nullptr);
         }
         
-        filterSubTree.setProperty("state", button->getToggleState(), nullptr);
-        filter->setState(filterSubTree["state"]);
+        filter->setState(button->getToggleState());
         
         if(filter->getFilterMagnitudesReady())
-            filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes(), button->getToggleState());
+        {
+            if(!filter->getCurrentState())
+                averageFilterResponseCurveComponent->resetMagnitudes(filterType);
+            else
+                averageFilterResponseCurveComponent->setMagnitudes(filter->getMagnitudes(), filterType);
+            
+            drawResponseCurves();
+        }
     } 
+}
+
+void FilterComponent::drawResponseCurves()
+{
+    averageFilterResponseCurveComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
+    filterResponseComponent->drawResponseCurve(filter->getFrequencies(), filter->getMagnitudes());
+}
+
+void FilterComponent::setAverageFilterResponseComponent(AverageFilterResponseCurveComponent* afrcc)
+{
+    averageFilterResponseCurveComponent = afrcc;
 }

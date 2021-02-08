@@ -11,6 +11,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "Filter.h"
+#include "Helpers.h"
 
 class FilterResponseCurveComponent : public Component
 {
@@ -25,19 +26,28 @@ public:
      @param frequencies     array of frequencies for each point in the path
      @param mags    array of magnitudes for each point in the path
      @param state   the state of the filter*/
-    void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags, bool state);
+    virtual void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags);
     
-    void setState(bool newState);
+    void drawResponseCurveHandle(float filterFrequency, float filterGain);
+    
+    virtual void initialise();
     
     void paintIfFilterOn(Graphics& g);
     
     void paintIfFilterOff(Graphics& g);
     
+    void setColour(Colour newColour);
+    
+    void setValueTree(ValueTree* vt);
+    
     //Component
     void paint(Graphics& g);
     void resized();
     
-private:
+protected:
     Path responseCurve;
-    bool filterState = false;
+    int filterType;
+    Colour colour = Colours::lightgrey;
+    Path responseCurveHandle;
+    ValueTree* valueTree {nullptr};
 };

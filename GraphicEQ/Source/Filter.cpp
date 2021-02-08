@@ -48,24 +48,29 @@ void Filter::prepare(int samplesPerBlockExpected, double sampleRate)
 void Filter::setFrequency(float newFrequency)
 {
     frequency = jlimit(20.f, 20000.f, newFrequency);
+    parameterChanged = true;
 }
 
 void Filter::setResonance(float newResonance)
 {
     resonance = jlimit((float) 0.1, (float) 18, newResonance);
+    parameterChanged = true;
 }
 
 void Filter::setGain(float newGain)
 {
-    gain = jlimit((float) 0.01, (float) 2, newGain);
+    gain = jlimit((float) 0.01, (float) 16, newGain);
+    parameterChanged = true;
 }
 
 void Filter::updateParameters()
 {
-    if(parameterHasChanged())
+    if(parameterChanged.load())
     {
+        smoothParameterValues();
         calculateFilterCoefficients();
         calculateFilterMagnitudes();
+        parameterChanged = false;
     }
 }
 
@@ -82,30 +87,11 @@ void Filter::calculateFilterCoefficients()
     }
 }
 
-bool Filter::parameterHasChanged()
+void Filter::smoothParameterValues()
 {
-    bool parameterChanged = false;
-    
-    if(frequency.load() != prevFrequency)
-    {
-        smoothedFrequency.setTargetValue(frequency.load());
-        prevFrequency = frequency.load();
-        parameterChanged = true;
-    }
-    if(resonance.load() != prevResonance)
-    {
-        smoothedResonance.setTargetValue(resonance.load());
-        prevResonance = resonance.load();
-        parameterChanged = true;
-    }
-    if(gain.load() != prevGain)
-    {
-        smoothedGain.setTargetValue(gain.load());
-        prevGain = gain.load();
-        parameterChanged = true;
-    }
-    
-    return parameterChanged;
+    smoothedFrequency.setTargetValue(frequency.load());
+    smoothedResonance.setTargetValue(resonance.load());
+    smoothedGain.setTargetValue(gain.load());
 }
 
 void Filter::calculateFilterMagnitudes()
@@ -144,4 +130,5 @@ bool Filter::getCurrentState()
 void Filter::setState(bool newState)
 {
     currentState = newState;
+    parameterChanged = true;
 }

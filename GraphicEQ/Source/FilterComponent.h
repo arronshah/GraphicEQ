@@ -14,6 +14,7 @@
 #include "UIElementProperties.h"
 #include <memory>
 #include "FilterResponseCurveComponent.h"
+#include "AverageFilterResponseCurveComponent.h"
 #include "Filter.h"
 
 class FilterComponent : public Component,
@@ -34,10 +35,6 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
     
-    /** Attaches the corresponding nodes within the value tree to the UI elements
-     @param index       specifies the node identifier*/
-    void createValueTreeAttachments(int index);
-    
     /** Sets the filter that this component controls
      @param filterRef   a pointer to a Filter object
      @see Filter*/
@@ -51,6 +48,8 @@ public:
      @see FilterResponseCurveComponent*/
     void setFilterResponseComponent(FilterResponseCurveComponent* frcc);
     
+    void setAverageFilterResponseComponent(AverageFilterResponseCurveComponent* afrcc);
+    
     /** Passes a new parameter value to the filter that this component controls
      @param parameterName   specifies the name of the parameter (frequency/resonance/gain)
      @param parameterValue  specifies the value of the parameter*/
@@ -61,6 +60,8 @@ public:
     
     //ValueTree listener
     void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override;
+    
+    void drawResponseCurves();
     
 private:
     Slider frequencySlider;
@@ -79,5 +80,7 @@ private:
     ValueTree& valueTree;
     
     float filterType = 0;;
+    
+    AverageFilterResponseCurveComponent* averageFilterResponseCurveComponent {nullptr};
     
 };

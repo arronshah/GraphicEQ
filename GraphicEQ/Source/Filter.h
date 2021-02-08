@@ -83,6 +83,8 @@ public:
     
     void calculateFilterCoefficients();
     
+    void smoothParameterValues();
+    
 private:
     const int filterType;
     dsp::ProcessorDuplicator <dsp::IIR::Filter<float>, dsp::IIR::Coefficients <float>> filter;
@@ -91,7 +93,7 @@ private:
     std::vector<double> frequencies;
     std::vector<double> magnitudes;
     
-    std::atomic<bool> currentState;
+    std::atomic<bool> currentState = 0;
     std::atomic<bool> filterMagnitudesReady;
     
     std::atomic<float> frequency;
@@ -101,7 +103,10 @@ private:
     float prevFrequency = 0;
     float prevResonance = 0;
     float prevGain = 0;
+    bool prevState = 0;
     SmoothedValue<float, ValueSmoothingTypes::Linear> smoothedFrequency;
     SmoothedValue<float, ValueSmoothingTypes::Linear> smoothedResonance;
     SmoothedValue<float, ValueSmoothingTypes::Linear> smoothedGain;
+    
+    std::atomic<bool> parameterChanged = false;
 };
