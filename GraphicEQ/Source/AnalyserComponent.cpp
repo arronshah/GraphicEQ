@@ -84,14 +84,15 @@ float AnalyserComponent::frequencyToDecimal (float freq)
 
 void AnalyserComponent::paintOverChildren(Graphics& g)
 {
-//    if(analyser != nullptr)
-//        drawPath(g);
+    if(analyser != nullptr)
+        drawPath(g);
 }
 
 void AnalyserComponent::drawPath(Graphics& g)
 {
     path.clear();
-    g.setColour (juce::Colours::paleturquoise);
+    g.setOpacity(1.f);
+    g.setColour (juce::Colours::lightgrey);
 
     auto width  = getLocalBounds().getWidth();
     auto height = getLocalBounds().getHeight() - 20;
@@ -118,14 +119,12 @@ void AnalyserComponent::drawPath(Graphics& g)
     Point<float> end((float) width, (float) height);
     Point<float> start(0.f, (float) height);
     path.lineTo(end);
-    path.lineTo(start);
     path.closeSubPath();
-    g.strokePath(path, PathStrokeType(1.5f, PathStrokeType::curved, PathStrokeType::rounded));
-    ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
-    FillType fill(gradient);
-    fill.setOpacity(0.4);
-    g.setFillType(fill);
+    g.strokePath(path, PathStrokeType(1.5f));
+    g.setColour(Colours::darkgrey);
+    g.setOpacity(0.5);
     g.fillPath(path);
+
 }
 
 void AnalyserComponent::pushPointsToOpenGLContext()
@@ -146,6 +145,9 @@ void AnalyserComponent::setOpenGLComponent(OpenGLComponent* glRef)
 
 Point<float> AnalyserComponent::getScaledPoint(int windowDataIndex)
 {
+
+    windowDataIndex = jlimit(0.f, (float) windowSize - 1, (float) windowDataIndex);
+    
     float x = juce::jmap (windowDataIndex, 0, windowSize - 1, 0, getWidth());
     float y = juce::jmap (windowData[windowDataIndex], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
     
@@ -160,8 +162,8 @@ void AnalyserComponent::timerCallback()
         {
             prepareNextFrame();
             analyser->setNextFftBlockIsReady(false);
-            pushPointsToOpenGLContext();
-//            repaint();
+            //pushPointsToOpenGLContext();
+            repaint();
         }
     }
 }
