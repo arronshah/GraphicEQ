@@ -40,4 +40,5 @@ public:
 private:
     float peakLevel;
     Analyser* analyser;
+    
 };

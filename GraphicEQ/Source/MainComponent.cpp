@@ -4,29 +4,41 @@
 MainComponent::MainComponent(Audio& a) : audio(a), valueTree("PARAMETERS")
 {
     setSize (900, 750);
-    setLookAndFeel(&newLookAndFeel);
     addAndMakeVisible(audioFilePlayerComponent);
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
     
     analyserComponent.setAnalyser(audio.getAnalyser());
+    analyserComponent.setOpenGLComponent(&openGLComponent);
     
     addAndMakeVisible(analyserComponent);
     
+    //addAndMakeVisible(openGLComponent);
+
+    addAndMakeVisible(averageFilterResponseCurveComponent);
+    averageFilterResponseCurveComponent.initialise();
+    
+    float saturationAmount = 0.7;
+    
+    Array<Colour> colours {Colours::red.withSaturation(saturationAmount), Colours::green.withSaturation(saturationAmount), Colours::orange.withSaturation(saturationAmount)};
+
     for(int i = 0; i < filterComponent.size(); i++)
     {
+        filterComponent[i].setColour(0x1001312, colours[i]);
         addAndMakeVisible(filterComponent[i]);
         filterComponent[i].setFilter(audio.getFilter(i));
-        filterComponent[i].createValueTreeAttachments(i);
         
         addAndMakeVisible(filterResponseCurveComponent[i]);
+        filterResponseCurveComponent[i].setColour(colours[i]);
         filterComponent[i].setFilterResponseComponent(&filterResponseCurveComponent[i]);
+        filterComponent[i].setAverageFilterResponseComponent(&averageFilterResponseCurveComponent);
     }
     
     addAndMakeVisible(levelMeter);
     levelMeter.setAnalyser(audio.getAnalyser());
-    levelMeter.startTimer(30);
+    levelMeter.startTimer(50);
     
-    //addAndMakeVisible(openGLComponent);
+    setLookAndFeel(&newLookAndFeel);
+    
 }
 
 MainComponent::~MainComponent()
@@ -37,7 +49,7 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (Colour::fromRGB(18, 18, 18));
 
     g.setFont (juce::Font (16.0f));
     g.setColour (juce::Colours::white);
@@ -56,16 +68,17 @@ void MainComponent::resized()
     analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
     levelMeter.setBounds(levelMeterArea.reduced(UIElementProperties::buttonPadding));
     
+    openGLComponent.setBounds(analyserArea.reduced(50));
+    
     for (int i = 0; i < 3; i++)
         filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    
+    averageFilterResponseCurveComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
     
     auto filterControlArea = localBoundsWithMargin.removeFromTop(220).removeFromRight(675);
     auto bandControlWidth = localBoundsWithMargin.getWidth() / 6;
     
     for(auto& filter : filterComponent)
         filter.setBounds(filterControlArea.removeFromLeft(bandControlWidth));
-    
-    openGLComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
-    
     
 }

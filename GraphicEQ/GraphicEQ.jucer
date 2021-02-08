@@ -20,6 +20,16 @@
         <FILE id="lYJNeu" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
       </GROUP>
       <GROUP id="{6B1C017F-E7B9-EE1E-FE7E-AC850FCC6B24}" name="UI">
+        <FILE id="TgBkED" name="AverageFilterResponseCurveComponent.cpp" compile="1"
+              resource="0" file="Source/AverageFilterResponseCurveComponent.cpp"/>
+        <FILE id="hSzIrt" name="AverageFilterResponseCurveComponent.h" compile="0"
+              resource="0" file="Source/AverageFilterResponseCurveComponent.h"/>
+        <FILE id="zFhbd6" name="Passthrough.vert" compile="0" resource="1"
+              file="Source/Passthrough.vert"/>
+        <FILE id="QuY2iL" name="PlainColor.frag" compile="0" resource="1" file="Source/PlainColor.frag"/>
+        <FILE id="WOEO9T" name="LineSegment.h" compile="0" resource="0" file="Source/LineSegment.h"/>
+        <FILE id="UnSVl3" name="Polyline2D.h" compile="0" resource="0" file="Source/Polyline2D.h"/>
+        <FILE id="ykqIAy" name="Vec2.h" compile="0" resource="0" file="Source/Vec2.h"/>
         <FILE id="AD5JC5" name="OpenGLComponent.cpp" compile="1" resource="0"
               file="Source/OpenGLComponent.cpp"/>
         <FILE id="xXPw3f" name="OpenGLComponent.h" compile="0" resource="0"
@@ -56,6 +66,7 @@
         <FILE id="Q5nLTX" name="MainComponent.cpp" compile="1" resource="0"
               file="Source/MainComponent.cpp"/>
       </GROUP>
+      <FILE id="oPPz0l" name="Helpers.h" compile="0" resource="0" file="Source/Helpers.h"/>
       <FILE id="b1Dt8F" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>

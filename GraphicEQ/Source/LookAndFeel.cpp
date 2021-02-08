@@ -14,7 +14,9 @@
 void UILookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int height,
                                     float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, Slider& slider)
 {
-    auto outline = findColour (Slider::rotarySliderOutlineColourId);
+    
+    auto outline = slider.getParentComponent()->findColour(Slider::rotarySliderOutlineColourId);
+    
     auto fill    = findColour (Slider::rotarySliderFillColourId);
     auto text    = Colour {0xffd4d4d4};
     auto toAngle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);

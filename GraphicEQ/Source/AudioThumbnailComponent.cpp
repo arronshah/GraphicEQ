@@ -30,10 +30,11 @@ void AudioThumbnailComponent::paint (juce::Graphics& g)
 {
     audioThumbnailArea = getLocalBounds().removeFromBottom(80).reduced(UIElementProperties::buttonPadding);
     
-    if(audioThumbnail.getNumChannels() == 0)
-        paintIfNoFileLoaded(g);
-    else
+    if(audioThumbnail.getNumChannels() > 0)
         paintIfFileLoaded(g);
+    else
+        paintIfNoFileLoaded(g);
+    
 }
 
 void AudioThumbnailComponent::paintIfNoFileLoaded (juce::Graphics& g)
@@ -49,6 +50,7 @@ void AudioThumbnailComponent::paintIfFileLoaded (juce::Graphics& g)
     g.drawImage(thumbnailImage, 0, 0, thumbnailImage.getWidth(), thumbnailImage.getHeight(), 0, 0, getWidth(), getHeight());
     
     g.setColour(Colours::white);
+    audioFileLength = audioThumbnail.getTotalLength();
     double currentAudioPosition = audioFilePlayer->getCurrentPosition();
     float drawPosition = (currentAudioPosition / audioFileLength) * (float) audioThumbnailArea.getWidth() + (float) audioThumbnailArea.getX();
     g.drawLine (drawPosition, (float) audioThumbnailArea.getY(), drawPosition,
@@ -75,7 +77,7 @@ void AudioThumbnailComponent::cacheAudioThumbnailImage()
     Graphics g2(thumbnailImage);
     g2.setColour (juce::Colours::darkgrey);
     g2.fillRect (audioThumbnailArea);
-    g2.setColour (juce::Colours::darkturquoise);
+    g2.setColour (juce::Colours::lightgrey);
     audioFileLength = audioThumbnail.getTotalLength();
     audioThumbnail.drawChannels (g2, audioThumbnailArea, 0.0, audioFileLength, 1.0f);
 }

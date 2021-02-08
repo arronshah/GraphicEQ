@@ -24,8 +24,8 @@ void LevelMeterComponent::paint(Graphics& g)
 {
     auto height = getHeight() - 20;
     auto bounds = getLocalBounds().removeFromTop(height);
-    g.setColour(Colours::darkturquoise);
-    g.setOpacity(0.4);
+    g.setColour(Colours::grey);
+    g.setOpacity(1.f);
     g.drawRect(bounds);
     
     auto relativeHeight = jmap(peakLevel, (float) 0, (float) height);
@@ -33,9 +33,12 @@ void LevelMeterComponent::paint(Graphics& g)
     
     Point<float> start(0.f, height);
     Point<float> end(getWidth(), 0.f);
-    ColourGradient gradient(Colours::darkturquoise, start, Colours::mediumpurple, end, true);
+    ColourGradient gradient(Colours::black, start, Colours::black, end, true);
+    gradient.clearColours();
+    gradient.addColour(0.2, Colours::green);
+    gradient.addColour(0.7, Colours::orange);
+    gradient.addColour(1.f, Colours::red);
     FillType fill(gradient);
-    fill.setOpacity(0.6);
     g.setFillType(fill);
     g.fillRect(levelToFill);
 }

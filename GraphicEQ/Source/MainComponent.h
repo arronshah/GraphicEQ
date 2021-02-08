@@ -9,6 +9,7 @@
 #include "LookAndFeel.h"
 #include "LevelMeterComponent.h"
 #include "OpenGLComponent.h"
+#include "AverageFilterResponseCurveComponent.h"
 
 //==============================================================================
 /*
@@ -42,11 +43,15 @@ private:
         {valueTree, filterType::HighPass}
     }};
     
+    OpenGLComponent openGLComponent;
+    
     std::array<FilterResponseCurveComponent, 3> filterResponseCurveComponent;
     
     UILookAndFeel newLookAndFeel;
     
-    OpenGLComponent openGLComponent;
+    AverageFilterResponseCurveComponent averageFilterResponseCurveComponent;
+    
+    
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
