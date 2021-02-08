@@ -24,14 +24,12 @@ public:
     /** Destructor */
     ~AudioThumbnailComponent();
     
-    /** Draws a watermark if no file is loaded
-     @param g   specifies a graphics object to draw with
-     @param thumbnailBounds     the bounds to draw within*/
+    /** Paints a placeholder indicating no file is currently loaded
+     @param g   specifies a graphics object to draw with */
     void paintIfNoFileLoaded (juce::Graphics& g);
     
-    /** Draws a watermark if file is loaded
-     @param g   specifies a graphics object to draw with
-     @param thumbnailBounds     the bounds to draw within*/
+    /** Paints the waveform of the loaded audio file
+     @param g   specifies a graphics object to draw with*/
     void paintIfFileLoaded (juce::Graphics& g);
     
     /** Sets the AudioFilePlayer that this component controls
@@ -46,6 +44,7 @@ public:
     //ChangeListener
     void changeListenerCallback (juce::ChangeBroadcaster* source) override;
     
+    /** Caches the audio waveform to an image for more efficient repainting*/
     void cacheAudioThumbnailImage();
     
     //Component

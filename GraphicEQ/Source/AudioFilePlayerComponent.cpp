@@ -56,23 +56,21 @@ void AudioFilePlayerComponent::buttonClicked(Button* button)
 {
     if (button == &playPauseButton)
     {
+        String newButtonText = (playPauseButton.getButtonText() == ">" ? "||" : ">");
+        playPauseButton.setButtonText(newButtonText);
+        
         if(audioFilePlayer->isPlaying())
-        {
             audioFilePlayer->changeState(Pause);
-            playPauseButton.setButtonText(">");
-        }
         else
-        {
             audioFilePlayer->changeState(Play);
-            playPauseButton.setButtonText("||");
-        }
+        
     }
     else if (button == &stopButton)
     {
-        if (audioFilePlayer->isPlaying())
-            playPauseButton.setButtonText(">");
+        playPauseButton.setButtonText(">");
         
-        audioFilePlayer->changeState(Stop);
+        if (audioFilePlayer->isPlaying())
+            audioFilePlayer->changeState(Stop);
     }
 }
 
