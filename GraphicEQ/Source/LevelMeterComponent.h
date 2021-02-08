@@ -40,5 +40,7 @@ public:
 private:
     float peakLevel;
     Analyser* analyser;
+    //ColourGradient* gradient;
+    std::unique_ptr<ColourGradient> gradient;
     
 };

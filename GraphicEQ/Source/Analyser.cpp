@@ -56,8 +56,8 @@ void Analyser::setNextFftBlockIsReady(bool flag)
 
 float Analyser::getPeakValue()
 {
-    float aval = 0;
-    float measuredItems = 0;
+    float absoluteValue = 0;
+    float measuredSamples = 0;
     int measuredLength = 44;
     const float fLog40 = log10(40);
     float oldPeakValue = 0;
@@ -67,20 +67,20 @@ float Analyser::getPeakValue()
 
     for(int i = 0; i < fftSize; i++)
     {
-        aval = fabs(readBuffer.load()->getSample(i)); //peak level detector
+        absoluteValue = fabs(readBuffer.load()->getSample(i));
         
-        if (aval > peakValue)
-            peakValue = aval;
+        if (absoluteValue > peakValue)
+            peakValue = absoluteValue;
         
-        measuredItems++;
+        measuredSamples++;
         
-        if (measuredItems == measuredLength)
+        if (measuredSamples == measuredLength)
         {
             newPeakValue = log10(peakValue * 39 + 1) / fLog40;
-            peakValue = measuredItems = 0;
+            peakValue = measuredSamples = 0;
         }
         
-        float coeff = (newPeakValue > oldPeakValue) ? 0.1 : 0.0001;
+        float coeff = (newPeakValue > oldPeakValue) ? 0.1 : 0.0001; //filter coefficient for whether value is rising or falling
         level = coeff * newPeakValue + (1 - coeff) * oldPeakValue;
         oldPeakValue = level;
     }

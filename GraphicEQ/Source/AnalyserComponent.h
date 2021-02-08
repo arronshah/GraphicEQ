@@ -12,6 +12,7 @@
 #include <JuceHeader.h>
 #include "Analyser.h"
 #include "OpenGLComponent.h"
+#include "Helpers.h"
 #include <array>
 #include <cmath>
 
@@ -40,19 +41,14 @@ public:
      @param analyserRef     a pointer to an Analyser object*/
     void setAnalyser(Analyser* analyserRef);
     
-    /** Draws the frequency spectrum path
+    /** Draws the frequency spectrum pathn
      @param g   a reference to a graphics object*/
     void drawPath(Graphics& g);
     
-    /** Draws a logarithmic grid that sits behind the spectrum plot
+    /** Draws a logarithmic grid that sits behind the spectrum plot and caches it to an Image object
      @param g   a reference to a graphics object
      @see drawPath()*/
     void cacheGrid();
-    
-    /** Converts a frequency value to a decimal logarithmically
-     @param freq    specifies the frequency to convert
-     @return a floating point number (0 - 1)*/
-    float frequencyToDecimal (float freq);
     
     /** Scales an amplitude value to the appropriate point on this components UI.
      @param windowDataIndex    the index of the windowData
@@ -81,7 +77,7 @@ private:
     
     OpenGLComponent* openGLComponent {nullptr};
     
-    Image* grid;
+    std::unique_ptr<Image> grid;
     
     
 };

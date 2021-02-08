@@ -25,7 +25,7 @@ void AnalyserComponent::paint(Graphics& g)
 
 void AnalyserComponent::cacheGrid()
 {
-    grid = new Image(Image::RGB, getWidth(), getHeight(), true);
+    grid = std::make_unique<Image>(Image::RGB, getWidth(), getHeight(), true);
     
     Graphics g(*grid);
     
@@ -38,12 +38,14 @@ void AnalyserComponent::cacheGrid()
     
     float linePosition = 0;
     
+    //Draw logarithmic lines for frequency values across width of component
     for(auto& frequency : gridFrequencyValues)
     {
-        linePosition = roundToInt(frequencyToDecimal(frequency) * width);
+        linePosition = roundToInt(Helpers::frequencyToDecimal(frequency) * width);
         g.drawVerticalLine(linePosition, 0, height);
     }
     
+    //Draw linear lines for gain values across height of component
     for(auto& gainLabel : gridGainValues)
     {
         g.setOpacity(0.5);
@@ -57,9 +59,11 @@ void AnalyserComponent::cacheGrid()
     }
     
     g.setOpacity(0.5);
+    
+    //Draw frequency labels onto lines
     for(auto& frequencyLabel : gridFrequencyLabels)
     {
-        linePosition = roundToInt(frequencyToDecimal(frequencyLabel) * width);
+        linePosition = roundToInt(Helpers::frequencyToDecimal(frequencyLabel) * width);
         String frequencyAsString;
         
         if(frequencyLabel >= 1000)
@@ -75,11 +79,6 @@ void AnalyserComponent::cacheGrid()
     }
     
     gridIsCached = true;
-}
-
-float AnalyserComponent::frequencyToDecimal (float freq)
-{
-    return (std::log (freq / 20.0f) / std::log (2.0f)) / 10.0f;
 }
 
 void AnalyserComponent::paintOverChildren(Graphics& g)
@@ -98,27 +97,24 @@ void AnalyserComponent::drawPath(Graphics& g)
     auto height = getLocalBounds().getHeight() - 20;
 
     path.startNewSubPath(0.f, height);
+    path.lineTo(getScaledPoint(0));
+    
     std::array<Point<float>, 3> points;
-
-    for (int i = 1; i < windowSize; i+=2)
+    
+    for (int i = 1; i < windowSize; i+=2) //This loop interpolates between 2 points and pass center as control point to allow Path to calculate quadratic - results in smoother curve
     {
         for(int x = 0; x < 3; x++)
             points[x] = getScaledPoint(i+x);
 
-        float cX = 2 * points[1].getX() - 0.5 * (points[0].getX() + points[2].getX());
-        float cY = 2 * points[1].getY() - 0.5 * (points[0].getY() + points[2].getY());
-        Point<float> controlPoint(cX, cY);
+        float cPointX = 2 * points[1].getX() - 0.5 * (points[0].getX() + points[2].getX());
+        float cPointY = 2 * points[1].getY() - 0.5 * (points[0].getY() + points[2].getY());
+        Point<float> controlPoint(cPointX, cPointY);
 
-        if(!isnan(cY)) //remove the need for this condition by fixing repainting issues
-        {
-            path.lineTo(points[0]);
+        if(!isnan(cPointY)) //remove the need for this condition by fixing repainting issues
             path.quadraticTo(controlPoint, points[2]);
-        }
     }
 
-    Point<float> end((float) width, (float) height);
-    Point<float> start(0.f, (float) height);
-    path.lineTo(end);
+    path.lineTo(width, height);
     path.closeSubPath();
     g.strokePath(path, PathStrokeType(1.5f));
     g.setColour(Colours::darkgrey);
@@ -184,6 +180,8 @@ void AnalyserComponent::prepareNextFrame()
         
         for (int i = 0; i < windowSize; ++i)
         {
+            //Credit to https://docs.juce.com/master/tutorial_spectrum_analyser.html
+            //Skew x-axis to use logarithmic scale, retrieve the correct array index and then scale the retrived value between 0 and 1
             auto skewedProportionX = 1.0f - std::exp (std::log (1.0f - (float) i / (float) windowSize) * 0.2f);
             auto fftDataIndex = jlimit (0, fftSize / 2, (int) (skewedProportionX * (float) fftSize * 0.5f));
             auto level = jmap (jlimit (mindB, maxdB, Decibels::gainToDecibels (fftData[fftDataIndex])

@@ -22,22 +22,30 @@ public:
     /** Destructor */
     ~FilterResponseCurveComponent() = default;
     
-    /** Applies the filter response curve to a path object
+    /** Draws the filter response curve to a path object
      @param frequencies     array of frequencies for each point in the path
-     @param mags    array of magnitudes for each point in the path
-     @param state   the state of the filter*/
+     @param mags    array of magnitudes for each point in the path*/
     virtual void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags);
     
-    void drawResponseCurveHandle(float filterFrequency, float filterGain);
-    
+    /** Initialises the response curve by clearing the path */
     virtual void initialise();
     
+    /** Paints the curve in colour to indicate the filter being on
+     @param g   a reference to a graphics object
+     @see paintIfFilterOff()*/
     void paintIfFilterOn(Graphics& g);
     
+    /** Paints the curve in greyscale to indicate the filter being off
+     @param g   a reference to a graphics object
+     @see paintIfFilterOn()*/
     void paintIfFilterOff(Graphics& g);
     
+    /** Sets the colour of the curve
+     @param newColour   specifies the new colour to be assigned to the curve*/
     void setColour(Colour newColour);
     
+    /** Sets the value tree object which holds the state of the filter
+     @param vt  a pointer to a ValueTree object*/
     void setValueTree(ValueTree* vt);
     
     //Component
@@ -48,6 +56,5 @@ protected:
     Path responseCurve;
     int filterType;
     Colour colour = Colours::lightgrey;
-    Path responseCurveHandle;
     ValueTree* valueTree {nullptr};
 };

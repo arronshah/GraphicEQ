@@ -54,6 +54,7 @@ void AverageFilterResponseCurveComponent::drawResponseCurve(std::vector<double>*
     
     responseCurve.startNewSubPath(0.f, height);
     
+    //credit to ffAudio's Frequalizer for the response curve scaling formula below https://github.com/ffAudio/Frequalizer
     float pixelsPerDouble = 2.f * height / Decibels::decibelsToGain(24.f);
     
     const double xFactor = static_cast<double> (width / frequencies->size());
@@ -65,9 +66,6 @@ void AverageFilterResponseCurveComponent::drawResponseCurve(std::vector<double>*
         float y = (yCalc > height) ? height : yCalc;
         responseCurve.lineTo (x, y);
     }
-    
-    //responseCurve.lineTo(width, height);
-    //responseCurve.closeSubPath();
     
     repaint();
 }

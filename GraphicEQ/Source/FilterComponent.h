@@ -18,7 +18,6 @@
 #include "Filter.h"
 
 class FilterComponent : public Component,
-                        public Slider::Listener,
                         public Button::Listener,
                         public ValueTree::Listener
 {
@@ -40,14 +39,14 @@ public:
      @see Filter*/
     void setFilter(Filter* filterRef);
     
-    //Slider Listener
-    void sliderValueChanged(Slider* slider) override;
-    
     /** Sets the filter response curve component that this component controls
      @param frcc   a pointer to a FilterResponseCurveComponent object
      @see FilterResponseCurveComponent*/
     void setFilterResponseComponent(FilterResponseCurveComponent* frcc);
     
+    /** Sets the AverageFilterResponseCurveComponent that this component sends data to
+     @param afrcc   a pointer to an AverageFilterResponseCurveComponent object
+     @see AverageFilterResponseCurveComponent*/
     void setAverageFilterResponseComponent(AverageFilterResponseCurveComponent* afrcc);
     
     /** Passes a new parameter value to the filter that this component controls
@@ -61,7 +60,8 @@ public:
     //ValueTree listener
     void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override;
     
-    void drawResponseCurves();
+    /** Updates all response curves affected by the filter that this component controls*/
+    void updateResponseCurves();
     
 private:
     Slider frequencySlider;
@@ -69,9 +69,9 @@ private:
     Slider resonanceSlider;
     TextButton filterOn;
     
-    ValueTreeSliderAttachment* frequencySliderAttachment;
-    ValueTreeSliderAttachment* resonanceSliderAttachment;
-    ValueTreeSliderAttachment* gainSliderAttachment;
+    std::unique_ptr<ValueTreeSliderAttachment> frequencySliderAttachment;
+    std::unique_ptr<ValueTreeSliderAttachment> resonanceSliderAttachment;
+    std::unique_ptr<ValueTreeSliderAttachment> gainSliderAttachment;
     
     FilterResponseCurveComponent* filterResponseComponent {nullptr};
     Filter* filter {nullptr};

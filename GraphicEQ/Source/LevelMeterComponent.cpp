@@ -31,21 +31,20 @@ void LevelMeterComponent::paint(Graphics& g)
     auto relativeHeight = jmap(peakLevel, (float) 0, (float) height);
     auto levelToFill = bounds.removeFromBottom(relativeHeight).reduced(5);
     
-    Point<float> start(0.f, height);
-    Point<float> end(getWidth(), 0.f);
-    ColourGradient gradient(Colours::black, start, Colours::black, end, true);
-    gradient.clearColours();
-    gradient.addColour(0.2, Colours::green);
-    gradient.addColour(0.7, Colours::orange);
-    gradient.addColour(1.f, Colours::red);
-    FillType fill(gradient);
+    FillType fill(*gradient);
     g.setFillType(fill);
     g.fillRect(levelToFill);
 }
 
 void LevelMeterComponent::resized()
 {
-    
+    Point<float> start(0.f, getHeight() - 20);
+    Point<float> end(getWidth(), 0.f);
+    gradient = std::make_unique<ColourGradient>(Colours::black, start, Colours::black, end, true);
+    gradient->clearColours();
+    gradient->addColour(0.2, Colours::green);
+    gradient->addColour(0.7, Colours::orange);
+    gradient->addColour(1.f, Colours::red);
 }
 
 void LevelMeterComponent::timerCallback()

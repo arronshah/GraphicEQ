@@ -77,12 +77,17 @@ public:
      @param newGain    specifies the new filter gain*/
     void setGain(float newGain);
     
+    /** Calculates the magnitudes for the frequency response of the filter */
     void calculateFilterMagnitudes();
     
+    /** Returns true is a filter parameter value as changed
+     @return parameterHasChanged    specifies whether or not a filter parameter has changed*/
     bool parameterHasChanged();
     
+    /** Calculates the coefficients for the filter */
     void calculateFilterCoefficients();
     
+    /** Applies linear smoothing to the filters parameter values */
     void smoothParameterValues();
     
 private:
