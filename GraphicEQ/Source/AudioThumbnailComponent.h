@@ -13,6 +13,8 @@
 #include "UIElementProperties.h"
 #include "AudioFilePlayer.h"
 
+/** A component class for visualising the waveform of an audio file loaded into an AudioFilePlayer object.
+ @see AudioFilePlayer*/
 class AudioThumbnailComponent : public Component,
                                 private ChangeListener,
                                 private Timer

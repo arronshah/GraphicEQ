@@ -13,6 +13,8 @@
 #pragma once
 
 template<class Type>
+
+/** A class for buffering data */
 class Buffer
 {
 public:

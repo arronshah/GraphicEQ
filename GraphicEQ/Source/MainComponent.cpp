@@ -8,14 +8,11 @@ MainComponent::MainComponent(Audio& a) : audio(a), valueTree("PARAMETERS")
     audioFilePlayerComponent.setAudioFilePlayer(audio.getAudioFilePlayer());
     
     analyserComponent.setAnalyser(audio.getAnalyser());
-    analyserComponent.setOpenGLComponent(&openGLComponent);
     
     addAndMakeVisible(analyserComponent);
-    
-    //addAndMakeVisible(openGLComponent);
 
     addAndMakeVisible(averageFilterResponseCurveComponent);
-    averageFilterResponseCurveComponent.initialise();
+    averageFilterResponseCurveComponent.initialise(NUMBER_OF_FILTERS);
     
     float saturationAmount = 0.7;
     
@@ -66,9 +63,8 @@ void MainComponent::resized()
     auto levelMeterArea = analyserArea.removeFromRight(35);
     
     analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
-    levelMeter.setBounds(levelMeterArea.reduced(UIElementProperties::buttonPadding));
     
-    openGLComponent.setBounds(analyserArea.reduced(50));
+    levelMeter.setBounds(levelMeterArea.reduced(UIElementProperties::buttonPadding));
     
     for (int i = 0; i < 3; i++)
         filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));

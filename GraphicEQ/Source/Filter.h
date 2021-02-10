@@ -11,6 +11,8 @@
 #pragma once
 #include <JuceHeader.h>
 
+/** Specifies the filter type to be passed to a filter object
+@see Filter */
 enum filterType
 {
     LowPass,
@@ -18,6 +20,10 @@ enum filterType
     HighPass
 };
 
+/** A class for filtering a stream of audio sample data. */
+/** Applies an inifite impulse response filter, which can be set to either low shelf, high shelf or peak
+ @param type    an enum specifying the type of the filter.
+ @see filterType*/
 class Filter
 {
 public:

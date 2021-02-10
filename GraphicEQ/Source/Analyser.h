@@ -22,6 +22,9 @@ enum
     windowSize = 128             // [3]
 };
 
+/** A class for analysing audio sample data */
+/** Contains an FFT and an envelope follower. Sample data is read and written from a double buffer.
+ @see Buffer*/
 class Analyser
 {
 public:

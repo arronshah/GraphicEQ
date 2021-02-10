@@ -16,7 +16,7 @@ Audio::Audio()
     audioSourcePlayer.setSource (&audioFilePlayer);
     audioFilePlayer.setAnalyser(&analyser);
     
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < NUMBER_OF_FILTERS; i++)
         audioFilePlayer.setFilter(&filter[i], i);
     
     auto errorMessage = audioDeviceManager.initialiseWithDefaultDevices (1, 2);

@@ -17,6 +17,13 @@
 #include "AverageFilterResponseCurveComponent.h"
 #include "Filter.h"
 
+/** A component class for controlling a Filter object through UI elements.*/
+/** Allows for the control of the filter frequency, resonance and gain through rotary sliders. Can also pass filter magnitude data to a FilterResponseCurveComponent.
+ @param vt  a reference to a ValueTree object where the filter parameters will be stored.
+ @param type    a filterType enum specifying the type of IIR filter (low shelf, high shelf or peak).
+ @see filterType
+ @see Filter
+ @see FilterResponseCurveComponent*/
 class FilterComponent : public Component,
                         public Button::Listener,
                         public ValueTree::Listener

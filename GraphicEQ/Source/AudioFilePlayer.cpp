@@ -72,7 +72,7 @@ void AudioFilePlayer::prepareToPlay (int samplesPerBlockExpected, double sampleR
 {
     audioTransportSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
     
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < filter.size(); i++)
     {
         if(filter[i] != nullptr)
             filter[i]->prepare(samplesPerBlockExpected, sampleRate);
@@ -92,7 +92,7 @@ void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToF
     {
         dsp::AudioBlock<float> audioBlock(*bufferToFill.buffer);
         
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < filter.size(); i++)
         {
             if(filter[i]->getCurrentState())
                 filter[i]->process(audioBlock);
@@ -133,5 +133,6 @@ void AudioFilePlayer::setAnalyser(Analyser* analyserRef)
 
 void AudioFilePlayer::setFilter(Filter* filterRef, int index)
 {
-    filter[index] = filterRef;
+    if (index < filter.size())
+        filter[index] = filterRef;
 }

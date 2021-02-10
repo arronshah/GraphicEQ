@@ -13,6 +13,8 @@
 #include "Filter.h"
 #include "Helpers.h"
 
+/** A component class for drawing a filter response curve to the GUI from a set of filter magnitude data.
+ @see Filter*/
 class FilterResponseCurveComponent : public Component
 {
 public:
@@ -26,9 +28,6 @@ public:
      @param frequencies     array of frequencies for each point in the path
      @param mags    array of magnitudes for each point in the path*/
     virtual void drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags);
-    
-    /** Initialises the response curve by clearing the path */
-    virtual void initialise();
     
     /** Paints the curve in colour to indicate the filter being on
      @param g   a reference to a graphics object

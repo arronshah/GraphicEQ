@@ -10,14 +10,15 @@
 
 #include "AverageFilterResponseCurveComponent.h"
 
-void AverageFilterResponseCurveComponent::initialise()
+void AverageFilterResponseCurveComponent::initialise(const int numberOfFilters)
 {
-    responseCurve.clear();
+    filterMagnitudes = std::make_unique<std::vector<std::vector<double>>>();
+    filterMagnitudes->resize(numberOfFilters);
     
-    for(int i = 0; i < filterMagnitudes.size(); i++)
+    for(int i = 0; i < filterMagnitudes->size(); i++)
     {
-        filterMagnitudes[i].resize(300);
-        std::fill(filterMagnitudes[i].begin(), filterMagnitudes[i].end(), 1.f);
+        filterMagnitudes->data()[i].resize(300);
+        std::fill(filterMagnitudes->data()[i].begin(), filterMagnitudes->data()[i].end(), 1.f);
     }
     
     totalMagnitudes.resize(300);
@@ -27,7 +28,8 @@ void AverageFilterResponseCurveComponent::initialise()
 
 void AverageFilterResponseCurveComponent::setMagnitudes(std::vector<double>& mags, int filterType)
 {
-    filterMagnitudes[filterType] = mags;
+    if(filterMagnitudes != nullptr)
+        filterMagnitudes->data()[filterType] = mags;
 }
 
 void AverageFilterResponseCurveComponent::paint(Graphics& g)
@@ -37,15 +39,15 @@ void AverageFilterResponseCurveComponent::paint(Graphics& g)
 
 void AverageFilterResponseCurveComponent::resetMagnitudes(int index)
 {
-    std::fill(filterMagnitudes[index].begin(), filterMagnitudes[index].end(), 1.f);
+    std::fill(filterMagnitudes->data()[index].begin(), filterMagnitudes->data()[index].end(), 1.f);
 }
 
 void AverageFilterResponseCurveComponent::drawResponseCurve(std::vector<double>* frequencies, std::vector<double>& mags)
 {
     std::fill (totalMagnitudes.begin(), totalMagnitudes.end(), 1.f);
     
-    for(int i = 0; i < filterMagnitudes.size(); i++)
-        FloatVectorOperations::multiply(totalMagnitudes.data(), filterMagnitudes[i].data(), static_cast<int>(totalMagnitudes.size()));
+    for(int i = 0; i < filterMagnitudes->size(); i++)
+        FloatVectorOperations::multiply(totalMagnitudes.data(), filterMagnitudes->data()[i].data(), static_cast<int>(totalMagnitudes.size()));
     
     responseCurve.clear();
 

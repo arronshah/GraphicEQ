@@ -10,6 +10,7 @@
 
 #pragma once
 
+/** A class containing various helper functions for converting control data.*/
 class Helpers
 {
 public:

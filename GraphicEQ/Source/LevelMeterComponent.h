@@ -12,6 +12,8 @@
 #include <JuceHeader.h>
 #include "Analyser.h"
 
+/** A component class for drawing a peak level meter to the GUI from the data recieved from an Analyser object.
+ @see Analyser*/
 class LevelMeterComponent : public Component,
                             public Timer
 {

@@ -21,6 +21,10 @@ void AnalyserComponent::paint(Graphics& g)
         cacheGrid();
     
     g.drawImage(*grid, 0, 0, grid->getWidth(), grid->getHeight(), 0, 0, getWidth(), getHeight());
+    
+    if(analyser != nullptr)
+        drawPath(g);
+
 }
 
 void AnalyserComponent::cacheGrid()
@@ -81,12 +85,6 @@ void AnalyserComponent::cacheGrid()
     gridIsCached = true;
 }
 
-void AnalyserComponent::paintOverChildren(Graphics& g)
-{
-    if(analyser != nullptr)
-        drawPath(g);
-}
-
 void AnalyserComponent::drawPath(Graphics& g)
 {
     path.clear();
@@ -97,7 +95,8 @@ void AnalyserComponent::drawPath(Graphics& g)
     auto height = getLocalBounds().getHeight() - 20;
 
     path.startNewSubPath(0.f, height);
-    path.lineTo(getScaledPoint(0));
+    
+    path.lineTo(getScaledPoint(0)); //FIX Y POINT BEING NAN
     
     std::array<Point<float>, 3> points;
     
@@ -110,8 +109,7 @@ void AnalyserComponent::drawPath(Graphics& g)
         float cPointY = 2 * points[1].getY() - 0.5 * (points[0].getY() + points[2].getY());
         Point<float> controlPoint(cPointX, cPointY);
 
-        if(!isnan(cPointY)) //remove the need for this condition by fixing repainting issues
-            path.quadraticTo(controlPoint, points[2]);
+        path.quadraticTo(controlPoint, points[2]);
     }
 
     path.lineTo(width, height);
@@ -130,13 +128,7 @@ void AnalyserComponent::pushPointsToOpenGLContext()
     for (int i = 1; i < windowSize; i++)
         pointsArr[i] = getScaledPoint(i);
     
-    if(openGLComponent != nullptr)
-        openGLComponent->updatePoints(pointsArr);
-}
-
-void AnalyserComponent::setOpenGLComponent(OpenGLComponent* glRef)
-{
-    openGLComponent = glRef;
+    //openGLComponent.updatePoints(pointsArr);
 }
 
 Point<float> AnalyserComponent::getScaledPoint(int windowDataIndex)
@@ -144,10 +136,10 @@ Point<float> AnalyserComponent::getScaledPoint(int windowDataIndex)
 
     windowDataIndex = jlimit(0.f, (float) windowSize - 1, (float) windowDataIndex);
     
-    float x = juce::jmap (windowDataIndex, 0, windowSize - 1, 0, getWidth());
-    float y = juce::jmap (windowData[windowDataIndex], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
+    float x = jmap (windowDataIndex, 0, windowSize - 1, 0, getWidth());
+    float y = jmap (windowData[windowDataIndex], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
     
-    return Point<float>(x, y);
+    return Point<float>(x, (!isnan(y)) ? y : getHeight() - 20 );
 }
 
 void AnalyserComponent::timerCallback()
@@ -166,7 +158,7 @@ void AnalyserComponent::timerCallback()
 
 void AnalyserComponent::resized()
 {
-    
+
 }
 
 void AnalyserComponent::prepareNextFrame()
@@ -188,8 +180,7 @@ void AnalyserComponent::prepareNextFrame()
                                                    - Decibels::gainToDecibels ((float) fftSize)),
                                      mindB, maxdB, 0.0f, 1.0f);
             
-            windowData[i] = level;
-            
+            windowData[i] = level;   
         }
     }
 }

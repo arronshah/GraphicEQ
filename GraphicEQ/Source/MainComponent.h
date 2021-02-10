@@ -36,23 +36,18 @@ private:
     ValueTree valueTree;
     LevelMeterComponent levelMeter;
     
-    std::array<FilterComponent, 3> filterComponent =
+    std::array<FilterComponent, NUMBER_OF_FILTERS> filterComponent =
     {{
         {valueTree, filterType::LowPass},
         {valueTree, filterType::BandPass},
         {valueTree, filterType::HighPass}
     }};
     
-    OpenGLComponent openGLComponent;
-    
-    std::array<FilterResponseCurveComponent, 3> filterResponseCurveComponent;
+    std::array<FilterResponseCurveComponent, NUMBER_OF_FILTERS> filterResponseCurveComponent;
     
     UILookAndFeel newLookAndFeel;
     
     AverageFilterResponseCurveComponent averageFilterResponseCurveComponent;
-    
-    
-    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

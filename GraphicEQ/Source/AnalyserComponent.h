@@ -16,6 +16,8 @@
 #include <array>
 #include <cmath>
 
+/** A component class for visualising the FFT data recieved from an Analyser object on the UI
+ @see Analyser*/
 class AnalyserComponent : public Component,
                           public Timer
 {
@@ -29,7 +31,6 @@ public:
     //Component
     void paint(Graphics&) override;
     void resized() override;
-    void paintOverChildren(Graphics& g) override;
     
     //Timer
     void timerCallback() override;
@@ -55,8 +56,6 @@ public:
      @return a Point object containing X and Y coordinates*/
     Point<float> getScaledPoint(int windowDataIndex);
     
-    void setOpenGLComponent(OpenGLComponent* glRef);
-    
     void pushPointsToOpenGLContext();
     
 private:
@@ -74,8 +73,6 @@ private:
     float gridGainValues[7] = {0.f, -12.f, -24.f, -36.f, -48.f, -60.f, -72.f};
     
     float peakLevel = 0;
-    
-    OpenGLComponent* openGLComponent {nullptr};
     
     std::unique_ptr<Image> grid;
     

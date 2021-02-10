@@ -12,6 +12,9 @@
 #include "AudioFilePlayer.h"
 #include "AudioThumbnailComponent.h"
 
+/** A component class for controlling the playback of an audio file loaded into an AudioFilePlayer object.*/
+/** Contains buttons for play, stop and pause as well as a file browser.
+ @see AudioFilePlayer*/
 class AudioFilePlayerComponent : public Component,
                                  private Button::Listener,
                                  private FilenameComponentListener

@@ -12,7 +12,7 @@
 
 FilterResponseCurveComponent::FilterResponseCurveComponent()
 {
-    initialise();
+    
 }
 
 void FilterResponseCurveComponent::paint(Graphics& g)
@@ -24,11 +24,6 @@ void FilterResponseCurveComponent::paint(Graphics& g)
         else
             paintIfFilterOff(g);
     }
-}
-
-void FilterResponseCurveComponent::initialise()
-{
-    responseCurve.clear();
 }
 
 void FilterResponseCurveComponent::setValueTree(ValueTree* vt)

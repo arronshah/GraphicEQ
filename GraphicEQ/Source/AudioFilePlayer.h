@@ -15,6 +15,8 @@
 #include "Filter.h"
 #include "LevelMeterComponent.h"
 
+#define NUMBER_OF_FILTERS 3
+
 enum TransportState
 {
     Play,
@@ -22,6 +24,7 @@ enum TransportState
     Stop
 };
 
+/** A class for reading audio from a file and handling the playback stream */
 class AudioFilePlayer : public AudioSource
 {
 public:
@@ -44,10 +47,26 @@ public:
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    
+    /** Return the current position of the audio stream*/
     double getCurrentPosition();
+    
+    /** Updates the position of the audio stream to the position specified
+     @param newPosition     specifies the new position of the stream*/
     void updatePosition(float newPosition);
+    
+    /** Returns the length of the loaded audio file in seconds*/
     double getLengthOfFileInSeconds();
+    
+    /** Sets the audio analyser
+     @param analyserRef     a reference to an audio analyser object
+     @see Analyser*/
     void setAnalyser(Analyser* analyserRef);
+    
+    /** Sets the audio filter at a specified index
+     @param filterRef     a reference to a filter object
+     @param index         the array index of the filter object
+     @see Filter*/
     void setFilter(Filter* filterRef, int index);
     
     
@@ -57,9 +76,6 @@ private:
     TimeSliceThread thread;
     TransportState audioTransportState;
     Analyser* analyser {nullptr};
-    Filter* filter[3] = {nullptr, nullptr, nullptr};
-    
-    
-    
+    std::array<Filter*, NUMBER_OF_FILTERS> filter = {nullptr, nullptr, nullptr};
     
 };
