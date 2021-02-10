@@ -136,11 +136,12 @@ Point<float> AnalyserComponent::getScaledPoint(int windowDataIndex)
 {
 
     windowDataIndex = jlimit(0.f, (float) windowSize - 1, (float) windowDataIndex);
+    float height = getHeight() - 20;
     
     float x = jmap (windowDataIndex, 0, windowSize - 1, 0, getWidth());
-    float y = jmap (windowData[windowDataIndex], 0.0f, 1.0f, (float) getHeight() - 20, 0.0f);
+    float y = jmap (windowData[windowDataIndex], 0.0f, 1.0f, (float) height, 0.0f);
     
-    return Point<float>(x, (!isnan(y)) ? y : getHeight() - 20 );
+    return Point<float>(x, (!isnan(y)) ? y : height );
 }
 
 void AnalyserComponent::timerCallback()

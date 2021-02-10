@@ -81,7 +81,7 @@ void FilterResponseCurveComponent::drawResponseCurve(std::vector<double>* freque
     float gain = valueTree->getProperty("gain");
     
     float xPos = jmap(frequencyAsDecimal, (float) 0.f, (float) getWidth());
-    float yPos = jmap(gain, -24.f, 24.f, (float) getHeight() - 20 , 0.f);
+    float yPos = jmap(gain, -24.f, 24.f, (float) height , 0.f);
     
     responseCurve.addEllipse(xPos, (float) yPos, 8.f, 8.f);
     
