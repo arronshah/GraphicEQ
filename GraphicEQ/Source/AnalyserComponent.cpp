@@ -128,8 +128,6 @@ void AnalyserComponent::pushPointsToOpenGLContext()
     
     for (int i = 1; i < windowSize; i++)
         pointsArr[i] = getScaledPoint(i);
-    
-    //openGLComponent.updatePoints(pointsArr);
 }
 
 Point<float> AnalyserComponent::getScaledPoint(int windowDataIndex)

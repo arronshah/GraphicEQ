@@ -27,8 +27,6 @@ FilterComponent::FilterComponent(ValueTree& vt, enum filterType type) :
     valueTree.addListener(this);
     filterSubTree = valueTree.getChildWithProperty("filterType", type);
     
-    DBG(valueTree.toXmlString());
-    
     addAndMakeVisible(filterOn);
     filterOn.setName("filterOn");
     filterOn.setButtonText("Off");
