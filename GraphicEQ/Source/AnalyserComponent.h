@@ -76,5 +76,7 @@ private:
     
     std::unique_ptr<Image> grid;
     
+    std::array<float, windowSize> oldLevel;
+    
     
 };

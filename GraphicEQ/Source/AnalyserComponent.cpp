@@ -13,6 +13,7 @@
 AnalyserComponent::AnalyserComponent()
 {
     startTimer(30);
+    std::fill(oldLevel.begin(), oldLevel.end(), 0.f);
 }
 
 void AnalyserComponent::paint(Graphics& g)
@@ -158,7 +159,7 @@ void AnalyserComponent::timerCallback()
 
 void AnalyserComponent::resized()
 {
-
+    
 }
 
 void AnalyserComponent::prepareNextFrame()
@@ -180,7 +181,11 @@ void AnalyserComponent::prepareNextFrame()
                                                    - Decibels::gainToDecibels ((float) fftSize)),
                                      mindB, maxdB, 0.0f, 1.0f);
             
-            windowData[i] = level;   
+            //apply slight filtering depending on whether level is rising or falling to prevent the graph from flickering as much
+            float coeff = (level > oldLevel[i]) ? 0.1 : 0.0001;
+            windowData[i] = coeff * level + (1 - coeff) * oldLevel[i];
+            oldLevel[i] = level;
+            
         }
     }
 }
