@@ -8,7 +8,6 @@
 #include "FilterResponseCurveComponent.h"
 #include "LookAndFeel.h"
 #include "LevelMeterComponent.h"
-#include "OpenGLComponent.h"
 #include "AverageFilterResponseCurveComponent.h"
 
 //==============================================================================

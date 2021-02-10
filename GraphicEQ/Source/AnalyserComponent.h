@@ -11,7 +11,6 @@
 #pragma once
 #include <JuceHeader.h>
 #include "Analyser.h"
-#include "OpenGLComponent.h"
 #include "Helpers.h"
 #include <array>
 #include <cmath>
