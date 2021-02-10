@@ -95,7 +95,7 @@ void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasC
 
 void FilterComponent::paint (juce::Graphics& g)
 {
-    Rectangle<int> bounds = getLocalBounds().reduced(UIElementProperties::buttonPadding);
+    Rectangle<int> bounds = getLocalBounds().reduced(UIElementProperties::padding);
     g.setColour(Colour::fromRGB(18, 18, 18).withLightness(10));
     g.fillRoundedRectangle(bounds.toFloat(), 3.f);
 }
@@ -104,13 +104,13 @@ void FilterComponent::resized()
 {
     auto bounds = getLocalBounds();
     auto filterOnButtonArea = bounds.removeFromTop(bounds.getHeight() / 8);
-    auto reducedButtonArea = filterOnButtonArea.reduced(UIElementProperties::buttonPadding);
+    auto reducedButtonArea = filterOnButtonArea.reduced(UIElementProperties::padding);
     filterOn.setBounds(reducedButtonArea.removeFromRight(reducedButtonArea.getWidth() / 4));
     
     auto row = bounds.getHeight() / 3;
-    frequencySlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
-    resonanceSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
-    gainSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::buttonPadding));
+    frequencySlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::padding));
+    resonanceSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::padding));
+    gainSlider.setBounds(bounds.removeFromTop(row).reduced(UIElementProperties::padding));
     
     if (filterResponseComponent != nullptr)
         updateResponseCurves();

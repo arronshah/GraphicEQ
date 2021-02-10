@@ -38,9 +38,9 @@ void AudioFilePlayerComponent::resized()
     
     auto playPauseButtonArea = audioFilePlayerControlArea.removeFromLeft(audioFilePlayerControlArea.getWidth()/2);
     
-    playPauseButton.setBounds(playPauseButtonArea.reduced(UIElementProperties::buttonPadding));
-    stopButton.setBounds(audioFilePlayerControlArea.reduced(UIElementProperties::buttonPadding));
-    loadFileButton->setBounds(row.reduced(UIElementProperties::buttonPadding));
+    playPauseButton.setBounds(playPauseButtonArea.reduced(UIElementProperties::padding));
+    stopButton.setBounds(audioFilePlayerControlArea.reduced(UIElementProperties::padding));
+    loadFileButton->setBounds(row.reduced(UIElementProperties::padding));
     
     audioThumbnailComponent.setBounds(bounds.removeFromBottom(80));
     

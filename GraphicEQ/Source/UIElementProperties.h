@@ -12,5 +12,5 @@
 
 namespace UIElementProperties
 {
-    const int buttonPadding = 5;
+    const int padding = 5;
 }

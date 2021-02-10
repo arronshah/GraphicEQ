@@ -62,14 +62,14 @@ void MainComponent::resized()
     auto analyserArea = localBoundsWithMargin.removeFromTop(400);
     auto levelMeterArea = analyserArea.removeFromRight(35);
     
-    analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    analyserComponent.setBounds(analyserArea.reduced(UIElementProperties::padding));
     
-    levelMeter.setBounds(levelMeterArea.reduced(UIElementProperties::buttonPadding));
+    levelMeter.setBounds(levelMeterArea.reduced(UIElementProperties::padding));
     
     for (int i = 0; i < 3; i++)
-        filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+        filterResponseCurveComponent[i].setBounds(analyserArea.reduced(UIElementProperties::padding));
     
-    averageFilterResponseCurveComponent.setBounds(analyserArea.reduced(UIElementProperties::buttonPadding));
+    averageFilterResponseCurveComponent.setBounds(analyserArea.reduced(UIElementProperties::padding));
     
     auto filterControlArea = localBoundsWithMargin.removeFromTop(220).removeFromRight(675);
     auto bandControlWidth = localBoundsWithMargin.getWidth() / 6;

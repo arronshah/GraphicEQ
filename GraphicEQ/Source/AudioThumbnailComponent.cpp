@@ -28,7 +28,7 @@ AudioThumbnailComponent::~AudioThumbnailComponent()
 
 void AudioThumbnailComponent::paint (juce::Graphics& g)
 {
-    audioThumbnailArea = getLocalBounds().removeFromBottom(80).reduced(UIElementProperties::buttonPadding);
+    audioThumbnailArea = getLocalBounds().removeFromBottom(80).reduced(UIElementProperties::padding);
     
     if(audioThumbnail.getNumChannels() > 0)
         paintIfFileLoaded(g);
@@ -56,7 +56,7 @@ void AudioThumbnailComponent::paintIfFileLoaded (juce::Graphics& g)
     g.drawLine (drawPosition, (float) audioThumbnailArea.getY(), drawPosition,
                 (float) audioThumbnailArea.getBottom(), 2.0f);
     
-    auto playedAudioArea = audioThumbnailArea.removeFromLeft(drawPosition - UIElementProperties::buttonPadding);
+    auto playedAudioArea = audioThumbnailArea.removeFromLeft(drawPosition - UIElementProperties::padding);
     g.setColour(Colours::grey);
     g.setOpacity(0.7);
     g.fillRect(playedAudioArea);

@@ -24,9 +24,9 @@ void UILookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int 
     auto text    = Colour {0xffd4d4d4};
     auto toAngle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
     
-    int heightWithPadding = height - UIElementProperties::buttonPadding;
-    int xWithPadding = x + UIElementProperties::buttonPadding;
-    int yWithPadding = y + UIElementProperties::buttonPadding;
+    int heightWithPadding = height - UIElementProperties::padding;
+    int xWithPadding = x + UIElementProperties::padding;
+    int yWithPadding = y + UIElementProperties::padding;
     
     if (!slider.isEnabled())
     {
