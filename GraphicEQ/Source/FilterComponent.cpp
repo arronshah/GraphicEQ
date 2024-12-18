@@ -94,7 +94,7 @@ void FilterComponent::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasC
 void FilterComponent::paint (juce::Graphics& g)
 {
     Rectangle<int> bounds = getLocalBounds().reduced(UIElementProperties::padding);
-    g.setColour(Colour::fromRGB(18, 18, 18).withLightness(10));
+    g.setColour(juce::Colours::black);
     g.fillRoundedRectangle(bounds.toFloat(), 3.f);
 }
 

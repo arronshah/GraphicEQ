@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="qvzQWR" name="GraphicEQ" projectType="guiapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              cppLanguageStandard="latest">
+              cppLanguageStandard="17" defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="R92xs7" name="GraphicEQ">
     <GROUP id="{27C385CB-D8D7-3691-8328-2B24976DE379}" name="Source">
       <GROUP id="{7440F3A3-673E-ECD2-45F9-5BD60CFBB325}" name="Audio">
@@ -24,16 +24,6 @@
               resource="0" file="Source/AverageFilterResponseCurveComponent.cpp"/>
         <FILE id="hSzIrt" name="AverageFilterResponseCurveComponent.h" compile="0"
               resource="0" file="Source/AverageFilterResponseCurveComponent.h"/>
-        <FILE id="zFhbd6" name="Passthrough.vert" compile="0" resource="1"
-              file="Source/Passthrough.vert"/>
-        <FILE id="QuY2iL" name="PlainColor.frag" compile="0" resource="1" file="Source/PlainColor.frag"/>
-        <FILE id="WOEO9T" name="LineSegment.h" compile="0" resource="0" file="Source/LineSegment.h"/>
-        <FILE id="UnSVl3" name="Polyline2D.h" compile="0" resource="0" file="Source/Polyline2D.h"/>
-        <FILE id="ykqIAy" name="Vec2.h" compile="0" resource="0" file="Source/Vec2.h"/>
-        <FILE id="AD5JC5" name="OpenGLComponent.cpp" compile="1" resource="0"
-              file="Source/OpenGLComponent.cpp"/>
-        <FILE id="xXPw3f" name="OpenGLComponent.h" compile="0" resource="0"
-              file="Source/OpenGLComponent.h"/>
         <FILE id="EjgPZt" name="LevelMeterComponent.cpp" compile="1" resource="0"
               file="Source/LevelMeterComponent.cpp"/>
         <FILE id="Dlmfkp" name="LevelMeterComponent.h" compile="0" resource="0"
@@ -78,38 +68,38 @@
         <CONFIGURATION isDebug="0" name="Release" targetName="AssignmentProject"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_dsp" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
         <MODULEPATH id="ff_gui_attachments" path="extra_modules/ff_gui_attachments"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="ff_gui_attachments" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>
